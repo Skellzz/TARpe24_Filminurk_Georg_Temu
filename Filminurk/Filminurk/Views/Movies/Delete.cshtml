@@ -1,0 +1,77 @@
+﻿@model Filminurk.Models.Movies.MoviesDeleteViewModel
+
+<h1>Kustuta Film</h1>
+
+<div>
+    <h4>Film</h4>
+    <hr/>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="ID" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.ID)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="Title" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.Title)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="Description" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.Description)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="FirstPublished" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.FirstPublished)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="Director" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.Director)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="CurrentRating" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.CurrentRating)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="CountryOfOrigin" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.CountryOfOrigin)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="MovieGenre" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.MovieGenre)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group-row">
+            <label asp-for="SubGenre" class="col-sm-2 col-form-label""></label>
+            @Html.DisplayFor(model => model.SubGenre)
+        </div>
+    </dl>
+    <hr/>
+    <form asp-action="DeleteConfirmation">
+        <input type="hidden" asp-for="ID"/>
+        <input type="submit" value="Remove" class="btn btn-danger"/>
+        <a asp-action="Index" asp-controller="Movies" class="btn btn-success">Return to list</a>
+    </form>
+</div>
