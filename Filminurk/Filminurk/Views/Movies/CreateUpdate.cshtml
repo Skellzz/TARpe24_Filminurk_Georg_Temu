@@ -80,6 +80,14 @@ else
                 <span asp-validation-for="MovieGenre"></span>
             </div>
         </div>
+
+        @foreach (var Images in Model.Images)
+        {
+            <partial name="_Images" model="Images" />
+            <input asp-action="removeImage" asp-controller="Movies" asp-route-ImageID="@Images.ImageID" type="submit"
+            class="btn btn-success" value=" Eemalda see pilt"/>
+        
+        }
         @if(Model.ID.HasValue)
         {
             <input asp-action="Update" asp-controller="Movies" type="submit" class="btn btn-primary" value="Update"/>
