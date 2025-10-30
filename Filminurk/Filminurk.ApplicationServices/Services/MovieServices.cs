@@ -33,12 +33,12 @@ namespace Filminurk.ApplicationServices.Services
             movie.Title = dto.Title;
             movie.Description = dto.Description;
             movie.CurrentRating = dto.CurrentRating;
-            movie.CountryOfOrigin = dto.CountryOfOrigin; // minu oma
+            movie.CountryOfOrigin = dto.CountryOfOrigin; 
             movie.FirstPublished = (DateOnly)dto.FirstPublished;
             movie.Actors = dto.Actors;
             movie.Director = dto.Director;
-            movie.MovieGenre = dto.MovieGenre;// minu oma
-            movie.SubGenre = dto.SubGenre;// minu oma
+            movie.MovieGenre = dto.MovieGenre;
+            movie.SubGenre = dto.SubGenre;
             movie.EntryCreatedAt = DateTime.Now;
             movie.EntryModifiedAt = DateTime.Now;
             _filesServices.FilesToApi(dto, movie);
@@ -62,12 +62,12 @@ namespace Filminurk.ApplicationServices.Services
             movie.Title = dto.Title;
             movie.Description = dto.Description;
             movie.CurrentRating = dto.CurrentRating;
-            movie.CountryOfOrigin = dto.CountryOfOrigin; // minu oma
+            movie.CountryOfOrigin = dto.CountryOfOrigin; 
             movie.FirstPublished = (DateOnly)dto.FirstPublished;
             movie.Actors = dto.Actors;
             movie.Director = dto.Director;
-            movie.MovieGenre = dto.MovieGenre;// minu oma
-            movie.SubGenre = dto.SubGenre;// minu oma
+            movie.MovieGenre = dto.MovieGenre;
+            movie.SubGenre = dto.SubGenre;
             movie.EntryCreatedAt = dto.EntryCreatedAt;
             movie.EntryModifiedAt = DateTime.Now;
             _filesServices.FilesToApi(dto, movie);

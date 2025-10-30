@@ -28,29 +28,37 @@ namespace Filminurk.ApplicationServices.Services
         { 
             if (dto.Files != null && dto.Files.Count > 0)
             {
-                if (Directory.Exists(_webHost.ContentRootPath + "\\wwroot\\multibleFileUpload\\"))
+                if (Directory.Exists(_webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"))
                 {
-                   Directory.CreateDirectory(_webHost.ContentRootPath + "\\wwroot\\multibleFileUpload\\");
+                   Directory.CreateDirectory(_webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\");
                 }
 
                 foreach (var file in dto.Files)
                 { 
-                    string uploadsFolder = Path.Combine(_webHost.ContentRootPath, "wwroot", "multibleFileUpload");
+                    string uploadsFolder = Path.Combine(_webHost.ContentRootPath, "wwwroot", "multipleFileUpload");
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    { 
-                        file.CopyTo(fileStream);
-                        FileToApi path = new FileToApi()
-                        {
-                            ImageID = Guid.NewGuid(),
-                            ExsistingFilePath = uniqueFileName,
-                            MovieID = domain.ID,
-                        };
+                    try
+                    {
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        { 
+                            file.CopyTo(fileStream);
+                            FileToApi path = new FileToApi()
+                            {
+                                ImageID = Guid.NewGuid(),
+                                ExsistingFilePath = uniqueFileName,
+                                MovieID = domain.ID,
+                            };
 
-                        _context.FilesToApi.AddAsync(path);
+                            _context.FilesToApi.Add(path);
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
                 }
                  
 
@@ -61,7 +69,7 @@ namespace Filminurk.ApplicationServices.Services
         {
            var imageID = await _context.FilesToApi.FirstOrDefaultAsync(x => x.ImageID == dto.ImageID);
 
-            var filePath = _webHost.ContentRootPath + "\\wwroot\\multibleFileUpload\\" + imageID.ExsistingFilePath;
+            var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\" + imageID.ExsistingFilePath;
 
             if (File.Exists(filePath))
             {

@@ -89,6 +89,12 @@
             @Html.DisplayFor(model => model.EntryModifiedAt)
         </div>
     </dl>
+    <div>
+        @foreach (var images in Model.Images)
+        {
+            <parial name="_Images" model="images"/>
+        }
+    </div>
 
     <hr/>
 
