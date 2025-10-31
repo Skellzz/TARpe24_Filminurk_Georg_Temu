@@ -2,6 +2,8 @@
 using Filminurk.Data;
 using Filminurk.Models.Movies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Filminurk.Controllers
 {
@@ -23,17 +25,19 @@ namespace Filminurk.Controllers
             _movieServices = movieServices;
             _filesServices = filesServices;
         }
-    }
-    public IActionResult Index()
+        public IActionResult Index()
         {
-            var result = _context.Movies.Select(x => new MoviesIndexViewModel
+            var result = _context.Actors.Select(u => new ActorsIndexViewModel
             {
-                ID = x.ID,
-                Title = x.Title,
-                FirstPublished = x.FirstPublished,
-                CurrentRating = x.CurrentRating,
-                CountryOfOrigin = x.CountryOfOrigin,
-                MovieGenre = x.MovieGenre,
+                ActorID = u.ActorID,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Nickname = u.Nickname,
+                MoviesActedFor = u.MoviesActedFor,
+                PortraitID = u.PortraitID,
+                Description = u.Description,
+                Rating = u.Rating,
+                ParimFilm = u.ParimFilm
 
             });
             return View(result);
