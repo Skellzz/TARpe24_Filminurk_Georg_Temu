@@ -1,16 +1,7 @@
-﻿namespace Filminurk.Models.Movies
+﻿namespace Filminurk.Models.Actors
 {
-    public enum ParimFilm
-    {
-        VelecoPastor,
-        Dursticpark,
-        Tuhkatriinu,
-        Matrix,
-        Inception,
-        Cars3,
-        Oilmaailm
-
-    }
+   
+    
     public class ActorsViewModel
     {
         public Guid ActorID { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace Filminurk.Models.Movies
+﻿namespace Filminurk.Models.Actors
 {
 
     public enum ParimFilm

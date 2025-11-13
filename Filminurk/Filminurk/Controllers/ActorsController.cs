@@ -1,6 +1,6 @@
 ﻿using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
-using Filminurk.Models.Movies;
+using Filminurk.Models.Actors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,17 +27,17 @@ namespace Filminurk.Controllers
         }
         public IActionResult Index()
         {
-            var result = _context.Actors.Select(u => new ActorsIndexViewModel
+            var result = _context.Actors.Select(x => new ActorsIndexViewModel
             {
-                ActorID = u.ActorID,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                Nickname = u.Nickname,
-                MoviesActedFor = u.MoviesActedFor,
-                PortraitID = u.PortraitID,
-                Description = u.Description,
-                Rating = u.Rating,
-                ParimFilm = u.ParimFilm
+                ActorID = x.ActorID,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Nickname = x.Nickname,
+                MoviesActedFor = x.MoviesActedFor,
+                PortraitID = x.PortraitID,
+                Description = x.Description,
+                Rating = x.Rating,
+                ParimFilm = (ParimFilm?)x.ParimFilm,
 
             });
             return View(result);
