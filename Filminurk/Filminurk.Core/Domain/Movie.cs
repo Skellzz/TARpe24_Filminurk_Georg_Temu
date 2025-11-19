@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,12 +19,12 @@ namespace Filminurk.Core.Domain
         public double? CurrentRating { get; set; }
         public List<UserComment>? Reviews { get; set; }
 
-        public string? CountryOfOrigin { get; set; }
-        public MovieGenre? MovieGenre { get; set; }
-        public MovieGenre? SubGenre { get; set; }
+        /* 3 õpilase valitud andmetüübi */
 
+        public bool? Vulgar { get; set; }
+        public Genre? Genre { get; set; }
+        public bool? IsOnAdultSwim { get; set; }
         public DateTime? EntryCreatedAt { get; set; }
         public DateTime? EntryModifiedAt { get; set; }
-
     }
 }

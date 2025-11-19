@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filminurk", "Filminurk\Filminurk.csproj", "{F5B5B4E7-6CD4-46C3-9ECC-92A90A6289E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filminurk.Data", "Filminurk.Data\Filminurk.Data.csproj", "{0C8CCCB8-D1DB-45FC-9CA9-96586BAD76AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filminurk.Core", "Filminurk.Core\Filminurk.Core.csproj", "{85DBE6B1-122D-4EE4-9312-DAAB0ED62198}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filminurk.ApplicationServices", "Filminurk.ApplicationServices\Filminurk.ApplicationServices.csproj", "{224FDAE0-272B-4837-B3B3-35595FFC5142}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5B5B4E7-6CD4-46C3-9ECC-92A90A6289E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5B5B4E7-6CD4-46C3-9ECC-92A90A6289E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5B5B4E7-6CD4-46C3-9ECC-92A90A6289E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5B5B4E7-6CD4-46C3-9ECC-92A90A6289E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C8CCCB8-D1DB-45FC-9CA9-96586BAD76AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C8CCCB8-D1DB-45FC-9CA9-96586BAD76AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C8CCCB8-D1DB-45FC-9CA9-96586BAD76AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C8CCCB8-D1DB-45FC-9CA9-96586BAD76AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85DBE6B1-122D-4EE4-9312-DAAB0ED62198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85DBE6B1-122D-4EE4-9312-DAAB0ED62198}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85DBE6B1-122D-4EE4-9312-DAAB0ED62198}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85DBE6B1-122D-4EE4-9312-DAAB0ED62198}.Release|Any CPU.Build.0 = Release|Any CPU
+		{224FDAE0-272B-4837-B3B3-35595FFC5142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{224FDAE0-272B-4837-B3B3-35595FFC5142}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{224FDAE0-272B-4837-B3B3-35595FFC5142}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{224FDAE0-272B-4837-B3B3-35595FFC5142}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

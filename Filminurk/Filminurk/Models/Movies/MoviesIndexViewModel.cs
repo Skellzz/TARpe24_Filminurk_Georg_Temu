@@ -8,7 +8,11 @@ namespace Filminurk.Models.Movies
         public string Title { get; set; }
         public DateOnly FirstPublished { get; set; }
         public double? CurrentRating { get; set; }
-        public string? CountryOfOrigin { get; set; }
-        public MovieGenre? MovieGenre { get; set; }
+
+        /* 2 õpilase valitud andmetüübi */
+
+        public bool? Vulgar { get; set; }
+        public Genre? Genre { get; set; }
+    
     }
 }
