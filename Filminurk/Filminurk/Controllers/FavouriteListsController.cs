@@ -1,4 +1,6 @@
 ﻿using Filminurk.ApplicationServices.Services;
+using Filminurk.Core.Dto;
+using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
 using Filminurk.Models.FavouriteLists;
 using Filminurk.Models.Movies;
@@ -10,7 +12,7 @@ namespace Filminurk.Controllers
     {
         private readonly FilminurkTARpe24Context _context;
         // favouriteList services add later
-        private readonly FilesServices _filesServices;
+        private readonly IFilesServices _filesServices;
         public FavouriteListsController(FilminurkTARpe24Context context, FilesServices filesServices)
         {
             _context = context;
@@ -44,5 +46,59 @@ namespace Filminurk.Controllers
                 );
             return View(resultingLists);
         }
+
+
+        /* create get, post */
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            //TODO: identify the user type. return different views for admin and registered
+
+            //this for normal user
+            var movies = _context.Movies
+                .OrderBy(m => m.Title)
+                .Select(mo => new MoviesIndexViewModel
+                { 
+                    ID = mo.ID,
+                    Title = mo.Title,
+                    FirstPublished = mo.FirstPublished,
+                    CurrentRating = mo.CurrentRating,
+                    Vulgar = mo.Vulgar,
+                    Genre = mo.Genre
+
+                })
+                .ToList();
+            ViewData["allmovies"] = movies;
+            ViewData["UserHasSelected"] = new List<string>();
+            //this for normal user
+            FavoriteListUserCreateViewModel vm = new();
+            return View("UserCreate", vm);
+        }
+        //create get, create post
+        [HttpPost]
+        public async Task<IActionResult> UserCreate(FavoriteListUserCreateViewModel vm, List<string> userHasSelected, List<MoviesIndexViewModel> movies)
+
+        {
+            List<Guid> tempParse = new();
+            foreach (var item in userHasSelected)
+            {
+                tempParse.Add(Guid.Parse(item));
+            }
+
+            var newListDto = new FavouriteListDTO() { };
+            newListDto.ListName = vm.ListName;
+            newListDto.ListDescription = vm.ListDescription;
+            newListDto.IsMovieOrActor = vm.IsMovieOrActor;
+            newListDto.IsPrviate = vm.IsPrviate;
+            newListDto.ListCreateAt= DateTime.UtcNow;
+            newListDto.ListBelongsToUser = "00000000-0000-0000-0000-000000000001";
+            newListDto.ListModifiedAt = DateTime.UtcNow;
+            newListDto.ListDeletedAt = vm.ListDeletedAt;
+
+
+
+        }
+
     }
 }

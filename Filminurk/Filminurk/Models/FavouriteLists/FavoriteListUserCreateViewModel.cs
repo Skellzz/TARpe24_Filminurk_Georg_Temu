@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Filminurk.Core.Domain;
+using Filminurk.Core.Dto;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Filminurk.Core.Domain;
-using Microsoft.AspNetCore.Http;
 
-namespace Filminurk.Core.Dto
+namespace Filminurk.Models.FavouriteLists
 {
-    public class FavouriteListDTO
+    public class FavoriteListUserCreateViewModel
     {
         [Key]
         public Guid FavouriteListID { get; set; }

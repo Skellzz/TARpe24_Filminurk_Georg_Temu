@@ -5,7 +5,7 @@
 namespace Filminurk.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class modelupdate : Migration
+    public partial class init1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1,0 +1,15 @@
+﻿@model Filminurk.Models.FavouriteLists.FavouriteListIndexImageViewModel
+<div>
+	@if (!Model.Image.Any())
+	{
+		<p>Pilte ei ole</p>	
+	}
+</div>
+@if (Model.ImageTitle == "Poster")
+{
+	<img class="card-img-top" src="@Model.Image"/>
+}
+else
+{
+	<img width="128" src="~/lib/defaultassets/image/noposter.png" />
+}
