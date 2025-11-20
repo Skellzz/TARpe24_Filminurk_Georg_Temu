@@ -40,12 +40,6 @@ namespace Filminurk.Controllers
                         ImageTitle = li.ImageTitle,
                         Image = string.Format("data:image/gif;base64, {0}", Convert.ToBase64String(li.ImageData))
                     })
-                    
-                    // Image = x.Image.Select(img => new ImageViewModel
-                    // {
-                    //     ImageID = img.ImageID,
-                    //     ExistingFilePath = img.ExistingFilePath
-                    // }).ToList()  
                 }
                 );
             return View(resultingLists);
