@@ -14,6 +14,7 @@
 		<input asp-for="ListDeletedAt" type="hidden" />
 		<input asp-for="IsReported" type="hidden" />
 		<input asp-for="ListBelongsToUser" type="hidden" />
+		
 
 		<div class="form-group-row">
 			<label asp-for="ListName" class="col-sm-2 col-form-label"></label>
@@ -73,8 +74,11 @@
 						}
 						else
 						{
-							<input type="checkbox" name="userHasSelected" value="@movie.ID" 
-							id="checkbox-@movie.ID" />	
+								<tr>
+									<input type="checkbox" name="userHasSelected" value="@movie.ID"
+									 id="checkbox-@movie.ID" />
+								</tr>
+							
 						}
 					</td>
 					

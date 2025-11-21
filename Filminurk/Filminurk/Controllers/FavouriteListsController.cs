@@ -1,4 +1,5 @@
 ﻿using Filminurk.ApplicationServices.Services;
+using Filminurk.Core.Domain;
 using Filminurk.Core.Dto;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
@@ -11,10 +12,11 @@ namespace Filminurk.Controllers
     public class FavouriteListsController : Controller
     {
         private readonly FilminurkTARpe24Context _context;
-        // favouriteList services add later
+        private readonly IFavoriteListsServices _favoriteListsServices;
         private readonly IFilesServices _filesServices;
-        public FavouriteListsController(FilminurkTARpe24Context context, FilesServices filesServices)
+        public FavouriteListsController(FilminurkTARpe24Context context, FilesServices filesServices, FavoriteListsServices favoriteListsServices)
         {
+            _favoriteListsServices = favoriteListsServices;
             _context = context;
             _filesServices = filesServices;
         }
@@ -81,11 +83,13 @@ namespace Filminurk.Controllers
 
         {
             List<Guid> tempParse = new();
+            // tekib ajutine guid list movieid-de hoidmiseks
             foreach (var item in userHasSelected)
             {
+                //lisame, iga stringi kohta järjendis userhasselected teisendatud guidi
                 tempParse.Add(Guid.Parse(item));
             }
-
+            //teeme uue DTO nimekirja jaoks
             var newListDto = new FavouriteListDTO() { };
             newListDto.ListName = vm.ListName;
             newListDto.ListDescription = vm.ListDescription;
@@ -95,9 +99,40 @@ namespace Filminurk.Controllers
             newListDto.ListBelongsToUser = "00000000-0000-0000-0000-000000000001";
             newListDto.ListModifiedAt = DateTime.UtcNow;
             newListDto.ListDeletedAt = vm.ListDeletedAt;
+            newListDto.ListOfMovies = vm.ListOfMovies;
+
+            //lisa filmid nimekirja, olemasolevate Id-de põhiselt
+            var listofmoviestoadd = new List<Movie>();
+            foreach (var movieId in tempParse) 
+            {
+                var thismovie = _context.Movies.Select(tm => tm.ID == movieId).Take(1);
+                newListDto.ListOfMovies.Add((Movie)thismovie);
+            }
+            newListDto.ListOfMovies = listofmoviestoadd;
+
+            //List<Guid> convertedIDs = new List<Guid>();
+            //if (newListDto.ListOfMovies != null)
+            //{
+            //    convertedIDs = MovieToId(newListDto.ListOfMovies);
+            //}
+            var newList = await _favoriteListsServices.Create(newListDto /*convertedIDs*/);
+            if (newList != null) {
+                return BadRequest();
+            }
+            return RedirectToAction("Index", vm);
 
 
 
+
+        }
+        private List<Guid> MovieToId(List<Movie> listOfMovies)
+        { 
+            var result = new List<Guid>();
+            foreach (var movie in listOfMovies)
+            {
+                result.Add(movie.ID);
+            }
+            return result;
         }
 
     }
