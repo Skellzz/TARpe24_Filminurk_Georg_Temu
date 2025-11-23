@@ -76,13 +76,21 @@
 							<input type="checkbox" name="userHasSelected" value="@movie.ID" 
 							id="checkbox-@movie.ID" />	
 						}
+
 					</td>
 					
 				</tr>
 
 			}
 		}
-
+		<input 
+			asp-action="UserCreate"
+			   asp-controller="FavouriteLists" 
+			   type="submit"
+			   class="btn btn-primary"
+			   value="Tee nimekiri"
+			   
+			   />
 
 	</form>
 </div>

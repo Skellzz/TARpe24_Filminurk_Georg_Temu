@@ -1,4 +1,5 @@
 ﻿using Filminurk.ApplicationServices.Services;
+using Filminurk.Core.Domain;
 using Filminurk.Core.Dto;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
@@ -11,6 +12,7 @@ namespace Filminurk.Controllers
     public class FavouriteListsController : Controller
     {
         private readonly FilminurkTARpe24Context _context;
+        private readonly IFavoriteListsServices _FavouriteListsServices;
         // favouriteList services add later
         private readonly IFilesServices _filesServices;
         public FavouriteListsController(FilminurkTARpe24Context context, FilesServices filesServices)
@@ -96,7 +98,26 @@ namespace Filminurk.Controllers
             newListDto.ListModifiedAt = DateTime.UtcNow;
             newListDto.ListDeletedAt = vm.ListDeletedAt;
 
-
+            List<Guid> convertedIDs = new();
+            if (newListDto.ListOfMovies != null)
+            {
+                convertedIDs = MovieToId(newListDto.ListOfMovies);
+            }
+            var newLIst = await _FavouriteListsServices.Create(newListDto,
+                convertedIDs);
+            if (newLIst != null)
+            {
+                return BadRequest();
+            }
+        }
+        private List<Guid> MovieToId(List<Movie> listOfMovies)
+        {
+            var result = new List<Guid>();
+            foreach (var movie in listOfMovies)
+            {
+                result.Add(movie.ID);
+            }
+            return result;
 
         }
 

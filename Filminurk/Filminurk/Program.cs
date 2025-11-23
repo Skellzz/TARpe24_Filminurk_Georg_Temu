@@ -3,6 +3,8 @@ using Filminurk.Core.Domain;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +15,7 @@ builder.Services.AddScoped<IMovieServices, MovieServices>();
 builder.Services.AddScoped<IFilesServices, FilesServices>();
 builder.Services.AddScoped<IActorServices, ActorServices>();
 builder.Services.AddScoped<IUserCommentsServices, UserCommentsServices>();
-builder.Services.AddScoped<IFavoriteListsServices, FavouriteListServices>();
+builder.Services.AddScoped<IFavoriteListsServices, FavoriteListsServices>();
 
 var app = builder.Build();
 

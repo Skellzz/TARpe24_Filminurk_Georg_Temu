@@ -39,8 +39,14 @@ namespace Filminurk.ApplicationServices.Services
             newList.ListModifiedAt = dto.ListModifiedAt;
             newList.ListDeletedAt = dto.ListDeletedAt;
             newList.ListOfMovies = selectedMovies;
+            await _context.FavouriteLists.AddAsync(newList);
+            await _context.SaveChangesAsync();
 
-
+            //foreach (var movieid in selectedMovies)
+            //{
+            //  _context.FavouriteLists.Entry
+            //}
+            return newList;
 
         }
     }

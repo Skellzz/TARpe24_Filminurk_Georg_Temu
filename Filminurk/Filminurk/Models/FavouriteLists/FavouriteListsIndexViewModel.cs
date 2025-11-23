@@ -11,8 +11,10 @@ namespace Filminurk.Models.FavouriteLists
         public string ListName { get; set; }
         public string? ListDescription { get; set; }
         public bool? IsPrviate { get; set; }
+        public List<Movie> listOfMovies { get; set; }
         // public List<Movie>? ListOfMovies { get; set; }
         // public List<Actor>? ListOfActors { get; set; }
+
 
         /* andmebaasiomadused */
         public DateTime? ListCreateAt { get; set; }
