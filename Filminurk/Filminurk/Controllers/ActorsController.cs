@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
+
+//unustasin eraldi Pushida 😅
 namespace Filminurk.Controllers
 {
     public class ActorsController : Controller

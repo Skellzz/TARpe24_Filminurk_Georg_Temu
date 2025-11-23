@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Filminurk.Models.Actors
 {
+
+    //unustasin eraldi Pushida 😅
     public class ActorsCreateUpdateViewModel
     {
         public Guid? ActorID { get; set; }

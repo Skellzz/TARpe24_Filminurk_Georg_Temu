@@ -4,6 +4,8 @@
     
     public class ActorsViewModel
     {
+
+        //unustasin eraldi Pushida 😅
         public Guid ActorID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

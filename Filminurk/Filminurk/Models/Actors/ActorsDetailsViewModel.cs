@@ -2,6 +2,8 @@
 
 namespace Filminurk.Models.Actors
 {
+
+    //unustasin eraldi Pushida 😅
     public class ActorsDetailsViewModel
     {
         public Guid? ActorID { get; set; }

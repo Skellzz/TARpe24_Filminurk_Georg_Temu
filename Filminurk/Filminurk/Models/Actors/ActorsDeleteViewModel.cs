@@ -3,6 +3,8 @@ using Filminurk.Models.Movies;
 
 namespace Filminurk.Models.Actors
 {
+
+    //unustasin eraldi Pushida 😅
     public class ActorsDeleteViewModel
     {
         public Guid? ActorID { get; set; }
