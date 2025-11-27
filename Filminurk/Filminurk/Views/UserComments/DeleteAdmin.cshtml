@@ -1,65 +1,61 @@
-﻿@model Filminurk.Models.Comments.UserCommentsIndexViewModel
-
-<h1>Vaata kommentaari</h1>
+﻿@model Filminurk.Models.UserComments.UserCommentIndexViewModel
+<h1>Vaata kommentaari.</h1>
 <div>
 	<h4>Info:</h4>
-	<hr/>
+	<hr />
 	<dl class="row">
-		
-		
 		<div class="form-group row">
 			<label asp-for="CommentID" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.CommentID)
+			@Html.DisplayFor(Model => Model.CommentID)
 		</div>
-
-		<div class="form-group row">
-			<label asp-for="CommentUserID" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.CommentUserID)
-		</div>
-
+	</dl>
+	<dl class="row">
 		<div class="form-group row">
 			<label asp-for="CommentBody" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.CommentBody)
+			@Html.DisplayFor(Model => Model.CommentBody)
 		</div>
-		
+	</dl>
+	<dl class="row">
 		<div class="form-group row">
 			<label asp-for="CommentedScore" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.CommentedScore)
+			@Html.DisplayFor(Model => Model.CommentedScore)
 		</div>
-		
+	</dl>
+	<dl class="row">
 		<div class="form-group row">
 			<label asp-for="IsHelpful" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.IsHelpful)
+			@Html.DisplayFor(Model => Model.IsHelpful)
 		</div>
-		
+	</dl>
+	<dl class="row">
 		<div class="form-group row">
-			<label asp-for="IsHarmful" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.IsHarmful)
+			<label asp-for="IsHarmFul" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.IsHarmFul)
 		</div>
-		
+	</dl>
+	<dl class="row">
 		<div class="form-group row">
 			<label asp-for="CommentCreatedAt" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.CommentCreatedAt)
+			@Html.DisplayFor(Model => Model.CommentCreatedAt)
 		</div>
-		
+	</dl>
+	<dl class="row">
 		<div class="form-group row">
 			<label asp-for="CommentModifiedAt" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.CommentModifiedAt)
+			@Html.DisplayFor(Model => Model.CommentModifiedAt)
 		</div>
-		
+	</dl>
+	<dl class="row">
 		<div class="form-group row">
 			<label asp-for="CommentDeletedAt" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => Model.CommentDeletedAt)
+			@Html.DisplayFor(Model => Model.CommentDeletedAt)
 		</div>
-
-
 	</dl>
-
-	<hr/>
+	<hr />
 	<form method="post">
-		<a asp-action="Index" asp-controller="UserComments" class="btn btn-primary">Tagasi loendisse</a>
-		<!-- <a asp-action="DeleteCommentAdmin" asp-controller="UserComments" method="post" class="btn btn-danger">Kustuta</a> -->
 		<input type="hidden" asp-for="CommentID" />
-		<input type="submit" asp-controller="UserComments" asp-action="DeleteCommentAdmin" value="Kustuta" class="btn btn-danger" asp-route-id="@Model.CommentID" />
+		<input type="submit" value="Delete" asp-controller="UserComments" asp-action="DeleteAdminPost" asp-route-id="@Model.CommentID" class="btn btn-danger" />
+		<a asp-action="Index" asp-controller="UserComments" class="btn btn-primary">Tagasi</a>
 	</form>
+
 </div>

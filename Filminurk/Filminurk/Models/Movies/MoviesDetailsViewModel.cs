@@ -11,16 +11,12 @@ namespace Filminurk.Models.Movies
         public string? Director { get; set; }
         public List<string>? Actors { get; set; }
         public double? CurrentRating { get; set; }
-        // public List<UserComment>? Reviews { get; set; }
-        // kaasolevate piltide andmeomadused
+
         public List<ImageViewModel> Images { get; set; } = new List<ImageViewModel>();
 
-        /* 3 õpilase valitud andmetüübi */
-
-        public bool? Vulgar { get; set; }
         public Genre? Genre { get; set; }
-        public bool? IsOnAdultSwim { get; set; }
-
+        public string? Tagline { get; set; }
+        public string? Warnings { get; set; }
         /* Andmebaasi jaoks vajalikud */
         public DateTime? EntryCreatedAt { get; set; }
         public DateTime? EntryModifiedAt { get; set; }

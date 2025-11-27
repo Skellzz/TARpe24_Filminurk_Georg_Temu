@@ -1,81 +1,74 @@
 ﻿@model Filminurk.Models.Actors.ActorsDeleteViewModel
 
-<h1>Kustuta Näitleja</h1>
-@* unustasin eraldi Pushida 😅 *@
+<h1>Kustuta Film</h1>
+
 <div>
-	<h4>Näitleja</h4>
-	<hr/>
+	<h4>Film</h4>
+	<hr />
 	<dl class="row">
-		
 		<div class="form-group-row">
-			<label asp-for="ActorID" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.ActorID)
+			<label asp-for="ID" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.ID)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="FirstName" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.FirstName)
+			@Html.DisplayFor(Model => Model.FirstName)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="LastName" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.LastName)
+			@Html.DisplayFor(Model => Model.LastName)
 		</div>
 	</dl>
-	<dl class="row">
-		<div class="form-group-row">
-			<label asp-for="NickName" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.NickName)
-		</div>
-	</dl>
-	<dl class="row">
-		<div class="form-group-row">
-			<label asp-for="FavouriteGenre" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.FavouriteGenre)
-		</div>
-	</dl>
-	<dl class="row">
-		<div class="form-group-row">
-			<label asp-for="HasAwards" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.HasAwards)
-		</div>
-	</dl>
-	<dl class="row">
-		<div class="form-group-row">
-			<label asp-for="American" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.American)
-		</div>
-	</dl>
-
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="MoviesActedFor" class="col-sm-2 col-form-label"></label>
-			@foreach (var movie in Model.MoviesActedFor)
-			{
-				string txtmovie = movie + ", ";
-				@Html.DisplayFor(mov => txtmovie)
-			}
+			@Html.DisplayFor(Model => Model.MoviesActedFor)
 		</div>
 	</dl>
-
+	<dl class="row">
+		<div class="form-group-row">
+			<label asp-for="ActorRating" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.ActorRating)
+		</div>																				 
+	</dl>
+	<dl class="row">
+		<div class="form-group-row">
+			<label asp-for="Gender" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.Gender)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group-row">
+			<label asp-for="FavoriteGenre" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.FavoriteGenre)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group-row">
+			<label asp-for="PortraitID" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.PortraitID)
+		</div>
+	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="EntryCreatedAt" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.EntryCreatedAt)
+			@Html.DisplayFor(Model => Model.EntryCreatedAt)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="EntryModifiedAt" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.EntryModifiedAt)
+			@Html.DisplayFor(Model => Model.EntryModifiedAt)
 		</div>
 	</dl>
-	<hr />
-	<form method="post" role="form"> 
-		<input type="hidden"  asp-for="ActorID" />
-		<input type="submit" asp-action="DeleteConfirmation" asp-route-id="@Model.ActorID" value="Kustuta" class="btn btn-danger" />
-		<a asp-action="Index" asp-controller="Actors" class="btn btn-success">Tagasi loendisse</a>
+	<hr/>
+	<form asp-action="DeleteConfirmation">
+		<input type="hidden" asp-for="ID" />
+		<input type="submit" value="Remove" class="btn btn-danger"/>
+		<a asp-action="Index" asp-controller="Movies" class="btn btn-success">Return to List</a>
 	</form>
 </div>

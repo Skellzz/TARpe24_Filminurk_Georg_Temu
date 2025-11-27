@@ -13,7 +13,6 @@ namespace Filminurk.Core.Domain
         public Guid ImageID { get; set; }
         public string? ExistingFilePath { get; set; }
         public Guid? MovieID { get; set; }
-        public bool? isPoster { get; set; }
-
+        public bool? IsPoster { get; set; } //määrab ära kas pilt on poster või mitte
     }
 }

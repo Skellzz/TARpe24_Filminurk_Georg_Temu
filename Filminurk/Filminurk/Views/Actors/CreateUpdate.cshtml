@@ -1,22 +1,23 @@
 ﻿@using Filminurk.Core.Domain
+@using Filminurk.Models.Actors
+
 @model Filminurk.Models.Actors.ActorsCreateUpdateViewModel
 
-@if (Model.ActorID.HasValue)
-{ 
-	<h1>Muuda näitleja andmed</h1>
+
+@if (Model.ID == Guid.Empty)
+{
+
+	<h1>Lisa Actor</h1>
 }
 else
 {
-	<h1>Lisa näitleja</h1>
+	<h1>Muuda Actor</h1>
 }
 
- @* unustasin eraldi Pushida 😅 *@
 <div>
-
 	<form method="post" enctype="multipart/form-data">
-		<input asp-for="ActorID" type="hidden" />
-		<input asp-for="EntryCreatedAt" type="hidden" />
-		<input asp-for="EntryModifiedAt" type="hidden" />
+		<input asp-for="ID" type="hidden" />
+
 
 		<div class="form-group row">
 			<label asp-for="FirstName" class="col-sm-2 col-form-label"></label>
@@ -24,67 +25,69 @@ else
 				<input asp-for="FirstName" class="form-control" />
 			</div>
 		</div>
-
 		<div class="form-group row">
 			<label asp-for="LastName" class="col-sm-2 col-form-label"></label>
 			<div class="col-sm-10">
 				<input asp-for="LastName" class="form-control" />
 			</div>
 		</div>
-
 		<div class="form-group row">
 			<label asp-for="NickName" class="col-sm-2 col-form-label"></label>
 			<div class="col-sm-10">
 				<input asp-for="NickName" class="form-control" />
 			</div>
 		</div>
-
-		<div class="form-group row">
-			<label asp-for="FavouriteGenre" class="col-sm-2 col-form-label"></label>
-			<div class="col-sm-10">
-				<select asp-for="FavouriteGenre" asp-items="Html.GetEnumSelectList<ActorsFavouriteGenre>()">
-					<option value="">-- Vali žanr --</option>
-				</select>
-				<span asp-validation-for="FavouriteGenre"></span>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label asp-for="HasAwards" class="col-sm-2 col-form-label"></label>
-			<div class="col-sm-10">
-				<input asp-for="HasAwards" class="form-control" />
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label asp-for="American" class="col-sm-2 col-form-label"></label>
-			<div class="col-sm-10">
-				<input asp-for="American" class="form-control" />
-			</div>
-		</div>
-
 		<div class="form-group row">
 			<label asp-for="MoviesActedFor" class="col-sm-2 col-form-label"></label>
 			<div class="col-sm-10">
-
-				<select asp-for="MoviesActedFor" class="form-control" asp-items="ViewBag.MovieTitle" multiple>
+				<input asp-for="MoviesActedFor" class="form-control" />
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="ActorRating" class="col-sm-2 col-form-label"></label>
+			<div class="col-sm-10">
+				<input asp-for="ActorRating" class="form-control" />
+			</div>
+		</div>
+		<!-- Genre -->
+		<div class="form-group row">
+			<label asp-for="FavoriteGenre" class="col-sm-2 col-form-label"></label>
+			<div class="col-sm-10">
+				<select asp-for="FavoriteGenre" asp-items="Html.GetEnumSelectList<Genre>()">
+					<option value="">-- Select Genre --</option>
+				</select>
+			</div>
+		</div>
+		<!-- Gender -->
+		<div class="form-group row">
+			<label asp-for="Gender" class="col-sm-2 col-form-label"></label>
+			<div class="col-sm-10">
+				<select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()">
+					<option value="">-- Select Gender --</option>
 				</select>
 			</div>
 		</div>
 
 
-		@if (Model.ActorID.HasValue)
+
+		@if (Model.ID == Guid.Empty)
 		{
-			<input asp-action="Update" asp-controller="Actors" type="submit" class="btn btn-primary" value="Muuda" />
+			<div class="form-group row">
+				<label asp-for="PortraitID" class="col-sm-2 col-form-label"></label>
+				<div class="col-sm-10">
+					<input class="form-control" asp-for="PortraitID" multiple type="file" />
+				</div>
+			</div>
+			<input asp-for="EntryCreatedAt" type="hidden" />
+			<input asp-action="Create" asp-controller="Actors" type="submit" class="btn btn-primary" value="Create" />
 		}
 		else
 		{
-			<input asp-action="Create" asp-controller="Actors" type="submit" class="btn btn-primary" value="Lisa" />
+				<input type="hidden" asp-for="PortraitID" />
+			<input asp-for="EntryModifiedAt" type="hidden" />
+			<input asp-action="Update" asp-controller="Actors" type="submit" class="btn btn-primary" value="Update" />
+
 		}
-
-		<a asp-action="Index" asp-controller="Actors" type="submit" class="btn btn-success">Tagasi loendisse</a>
-
-		
-
 	</form>
+
 </div>

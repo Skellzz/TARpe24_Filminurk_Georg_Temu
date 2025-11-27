@@ -1,22 +1,17 @@
 ﻿using Filminurk.Core.Domain;
-using System.ComponentModel.DataAnnotations;
 
 namespace Filminurk.Models.Actors
 {
-
-    //unustasin eraldi Pushida 😅
     public class ActorsIndexViewModel
     {
-        public Guid ActorID { get; set; }
+        public Guid ID { get; set; }
         public string FirstName { get; set; }
-        public string LastName { get; set; }
-        //public List<string>? MoviesActedFor { get; set; }
-        // public Guid PortraitID { get; set; }
-        // 3 õpilase andmetüübi
-        public ActorsFavouriteGenre? FavouriteGenre { get; set; }
-        public bool? HasAwards { get; set; }
-        public bool? American { get; set; }
+        public string? LastName { get; set; }
+        public string? NickName { get; set; }
 
-
+        /* Kolm minu mõeldud asju */
+        public int? ActorRating { get; set; }
+        public Gender? Gender { get; set; }
+        public Genre? FavoriteGenre { get; set; }
     }
 }

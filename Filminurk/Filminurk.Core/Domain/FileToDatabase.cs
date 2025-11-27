@@ -15,6 +15,5 @@ namespace Filminurk.Core.Domain
         public byte[] ImageData { get; set; }
         public string Image { get; set; }
         public Guid? ListID { get; set; }
-
     }
 }

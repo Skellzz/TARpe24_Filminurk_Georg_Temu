@@ -1,13 +1,13 @@
-﻿using Filminurk.Core.Domain;
-using Filminurk.Core.Dto;
-using Filminurk.Core.ServiceInterface;
-using Filminurk.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Filminurk.Core.Domain;
+using Filminurk.Core.Dto;
+using Filminurk.Core.ServiceInterface;
+using Filminurk.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Filminurk.ApplicationServices.Services
 {
@@ -21,33 +21,30 @@ namespace Filminurk.ApplicationServices.Services
             _context = context;
             _filesServices = filesServices;
         }
-
-        public async Task<FavouriteList> DetailsAsync(Guid id)
-        { 
-            var result = await _context.FavouriteLists
-                .FirstOrDefaultAsync(x => x.FavouriteListID == id);
+        public async Task<FavoriteList> DetailsAsync(Guid id)
+        {
+            var result = await _context.FavoriteLists.FirstOrDefaultAsync(x => x.FavoriteListID == id);
             return result;
         }
-
-        public async Task<FavouriteList> Create(FavouriteListDTO dto /*,List<Movie>
-            selectedMovies*/)
+        public async Task<FavoriteList> Create(FavoriteListDTO dto/*, List<Movie> selectedMovies*/)
         {
-            FavouriteList newList = new();
-            newList.FavouriteListID = Guid.NewGuid();
+            FavoriteList newList = new();
+            newList.FavoriteListID = dto.FavoriteListID;
             newList.ListName = dto.ListName;
-            newList.ListDescription = dto.ListDescription;
-            newList.ListCreateAt = dto.ListCreateAt;
-            newList.ListModifiedAt = dto.ListModifiedAt;
+            newList.Description = dto.Description;
+            newList.IsPrivate = dto.IsPrivate;
+            newList.ListCreatedAt = dto.ListCreatedAt;
             newList.ListDeletedAt = dto.ListDeletedAt;
-            await _context.FavouriteLists.AddAsync(newList);
+            newList.ListModifiedAt = dto.ListModifiedAt;
+            newList.ListOfMovies = dto.ListOfMovies;
+            newList.ListBelongsToUser = dto.ListBelongsToUser;
+            await _context.FavoriteLists.AddAsync(newList);
             await _context.SaveChangesAsync();
-
-            //foreach (var movieid in selectedMovies)
-            //{
-            //  _context.FavouriteLists.Entry
-            //}
+            /*foreach (var movie in selectedMovies)
+            {
+                _context.Entry(movie).Property(p => p.ID);
+            } */
             return newList;
-
         }
     }
 }

@@ -1,7 +1,6 @@
-﻿@model Filminurk.Models.Movies.MoviesDeleteViewModel
+﻿@model Filminurk.Models.Movies.MovieDeleteViewModel
 
-
-<h1>Kustuta File</h1>
+<h1>Kustuta Film</h1>
 
 <div>
 	<h4>Film</h4>
@@ -9,74 +8,79 @@
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="ID" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.ID)
+			@Html.DisplayFor(Model => Model.ID)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="Title" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.Title)
+			@Html.DisplayFor(Model => Model.Title)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="Description" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.Description)
+			@Html.DisplayFor(Model => Model.Description)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="FirstPublished" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.FirstPublished)
+			@Html.DisplayFor(Model => Model.FirstPublished)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="Director" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.Director)
-		</div>
+			@Html.DisplayFor(Model => Model.Director)
+		</div>																				 
 	</dl>
+	<!--<dl class="row">
+		<div class="form-group-row">
+			<label asp-for="Actors" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.Actors)
+		</div>
+	</dl>	 -->
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="CurrentRating" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.CurrentRating)
-		</div>
-	</dl>
-	<dl class="row">
-		<div class="form-group-row">
-			<label asp-for="Vulgar" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.Vulgar)
+			@Html.DisplayFor(Model => Model.CurrentRating)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="Genre" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.Genre)
+			@Html.DisplayFor(Model => Model.Genre)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
-			<label asp-for="IsOnAdultSwim" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.IsOnAdultSwim)
+			<label asp-for="Tagline" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.Tagline)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group-row">
+			<label asp-for="Warnings" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.Warnings)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="EntryCreatedAt" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.EntryCreatedAt)
+			@Html.DisplayFor(Model => Model.EntryCreatedAt)
 		</div>
 	</dl>
 	<dl class="row">
 		<div class="form-group-row">
 			<label asp-for="EntryModifiedAt" class="col-sm-2 col-form-label"></label>
-			@Html.DisplayFor(model => model.EntryModifiedAt)
+			@Html.DisplayFor(Model => Model.EntryModifiedAt)
 		</div>
 	</dl>
-	<hr />
+	<hr/>
 	<form asp-action="DeleteConfirmation">
-
 		<input type="hidden" asp-for="ID" />
 		<input type="submit" value="Remove" class="btn btn-danger"/>
-		<a asp-action="Index" asp-controller="Movies" class="btn btn-danger">Return to list</a>
+		<a asp-action="Index" asp-controller="Movies" class="btn btn-success">Return to List</a>
 	</form>
 </div>

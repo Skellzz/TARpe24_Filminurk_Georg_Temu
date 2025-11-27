@@ -1,21 +1,19 @@
 using Filminurk.ApplicationServices.Services;
-using Filminurk.Core.Domain;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<FilminurkTARpe24Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IMovieServices, MovieServices>();
-builder.Services.AddScoped<IFilesServices, FilesServices>();
-builder.Services.AddScoped<IActorServices, ActorServices>();
+builder.Services.AddScoped<IFilesServices, FileServices>();
+builder.Services.AddScoped<IActorsServices, ActorsServices>();
 builder.Services.AddScoped<IUserCommentsServices, UserCommentsServices>();
 builder.Services.AddScoped<IFavoriteListsServices, FavoriteListsServices>();
+builder.Services.AddDbContext<FilminurkTARpe24Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 

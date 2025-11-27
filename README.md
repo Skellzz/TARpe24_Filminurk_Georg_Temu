@@ -1,2 +1,2 @@
-# TARpe24_Filminurk_Temu_Geor
-yea
+# Filminurk_Kaur_TARpe24
+projekt kus kasutaja saab osta filme ja arvustada neid.

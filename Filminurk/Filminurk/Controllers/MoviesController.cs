@@ -1,10 +1,15 @@
-﻿using Filminurk.Core.Dto;
-using Filminurk.Core.ServiceInterface;
-using Filminurk.Data;
+﻿using Filminurk.Data;
 using Filminurk.Models.Movies;
+using Filminurk.Core.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Filminurk.Core.ServiceInterface;
 using Microsoft.EntityFrameworkCore;
+using Filminurk.Core.Domain;
+using System.Diagnostics;
+using System.IO;
+using Microsoft.Extensions.Logging.Abstractions;
+using Filminurk.ApplicationServices.Services;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace Filminurk.Controllers
 {
@@ -12,14 +17,12 @@ namespace Filminurk.Controllers
     {
         private readonly FilminurkTARpe24Context _context;
         private readonly IMovieServices _movieServices;
-        public MoviesController
-            (
-            FilminurkTARpe24Context context, 
-            IMovieServices movieServices
-            )
+        private readonly IFilesServices _fileServices;
+        public MoviesController(FilminurkTARpe24Context context, IMovieServices movieServices, IFilesServices fileServices)
         {
             _context = context;
             _movieServices = movieServices;
+            _fileServices = fileServices;
         }
         public IActionResult Index()
         {
@@ -28,9 +31,10 @@ namespace Filminurk.Controllers
                 ID = x.ID,
                 Title = x.Title,
                 FirstPublished = x.FirstPublished,
+                Genre = x.Genre,
                 CurrentRating = x.CurrentRating,
-                Vulgar = x.Vulgar,
-                Genre = x.Genre
+                Warnings = x.Warnings,
+
             });
             return View(result);
         }
@@ -41,91 +45,105 @@ namespace Filminurk.Controllers
             MoviesCreateUpdateViewModel result = new();
             return View("CreateUpdate", result);
         }
-
         [HttpPost]
         public async Task<IActionResult> Create(MoviesCreateUpdateViewModel vm)
         {
-            if (ModelState.IsValid == true)
+            if (ModelState.IsValid)
             {
-
-            var dto = new MoviesDTO()
-            {
-                ID = vm.ID,
-                Title = vm.Title,
-                Description = vm.Description,
-                FirstPublished = vm.FirstPublished,
-                Director = vm.Director,
-                Actors = vm.Actors,
-                CurrentRating = vm.CurrentRating,
-                Vulgar = vm.Vulgar,
-                Genre = vm.Genre,
-                IsOnAdultSwim = vm.IsOnAdultSwim,
-                EntryCreatedAt = vm.EntryCreatedAt,
-                EntryModifiedAt = vm.EntryModifiedAt,
-
-                Files = vm.Files,
-                FileToApiDtos = vm.Images
-                .Select(x => new FileToApiDTO
+                var dto = new MoviesDTO()
                 {
-                    ImageID = x.ImageID,
-                    FilePath = x.FilePath,
-                    MovieID = x.MovieID
-                }).ToArray()
-            };
+                    ID = vm.ID,
+                    Title = vm.Title,
+                    Description = vm.Description,
+                    FirstPublished = vm.FirstPublished,
+                    Director = vm.Director,
+                    Actors = vm.Actors,
+                    CurrentRating = vm.CurrentRating,
+                    Warnings = vm.Warnings,
+                    Genre = vm.Genre,
+                    Tagline = vm.Tagline,
+                    EntryCreatedAt = vm.EntryCreatedAt,
+                    EntryModifiedAt = vm.EntryModifiedAt,
+                    Files = vm.Files,
+                    Images = vm.Images
+                    .Select(x => new FileToApiDTO
+                    {
+                        ImageID = x.ImageID,
+                        FilePath = x.FilePath,
+                        MovieID = x.MovieID,
+                        IsPoster = x.IsPoster,
+                    }).ToArray()
+                };
+                var result = await _movieServices.Create(dto);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                if (!ModelState.IsValid)
+                {
+                    return NotFound();
+                }
+                return RedirectToAction(nameof(Index));
+            }
 
-            var result = await _movieServices.Create(dto);
-            if (result == null)
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var movie = await _movieServices.DetailsAsync(id);
+            if(movie==null)
             {
                 return NotFound();
             }
-            return RedirectToAction(nameof(Index));
-            }
-            return RedirectToAction(nameof(Index));
+            ImageViewModel[] images = await FileFromDatabase(id);
+            var vm = new MoviesDetailsViewModel();
+            vm.ID = movie.ID;
+            vm.Title = movie.Title;
+            vm.FirstPublished = movie.FirstPublished;
+            vm.Genre = movie.Genre;
+            vm.CurrentRating = movie.CurrentRating;
+            vm.Warnings = movie.Warnings;
+            vm.Actors = movie.Actors;
+            vm.EntryCreatedAt = movie.EntryCreatedAt;
+            vm.EntryModifiedAt = movie.EntryModifiedAt;
+            vm.Director = movie.Director;
+            vm.Tagline = movie.Tagline;
+            vm.Description = movie.Description;
+            vm.Images.AddRange(images);
+            return View(vm);
         }
 
 
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
             var movie = await _movieServices.DetailsAsync(id);
-            
             if (movie == null)
             {
                 return NotFound();
             }
-
-            var images = await _context.FilesToApi
-                .Where(x => x.MovieID == id)
-                .Select(y => new ImageViewModel
-                {
-                    FilePath = y.ExistingFilePath,
-                    ImageID = id
-                }).ToArrayAsync();
-
-
             var vm = new MoviesCreateUpdateViewModel();
+
+            var images = await _context.FilesToApi.Where(x=>x.MovieID== id).Select(y => new ImageViewModel { FilePath=y.ExistingFilePath, ImageID = id }).ToArrayAsync();
+
             vm.ID = movie.ID;
             vm.Title = movie.Title;
-            vm.Description = movie.Description;
             vm.FirstPublished = movie.FirstPublished;
-            vm.Director = movie.Director;
-            vm.Actors = movie.Actors;
-            vm.CurrentRating = movie.CurrentRating;
-            vm.Vulgar = movie.Vulgar;
             vm.Genre = movie.Genre;
-            vm.IsOnAdultSwim = movie.IsOnAdultSwim;
+            vm.CurrentRating = movie.CurrentRating;
+            vm.Warnings = movie.Warnings;
+            vm.Actors = movie.Actors;
             vm.EntryCreatedAt = movie.EntryCreatedAt;
             vm.EntryModifiedAt = movie.EntryModifiedAt;
+            vm.Director = movie.Director;
+            vm.Tagline = movie.Tagline;
+            vm.Description = movie.Description;
             vm.Images.AddRange(images);
-
-            return View("CreateUpdate", vm);
-
+            return View("CreateUpdate",vm);
         }
-
         [HttpPost]
         public async Task<IActionResult> Update(MoviesCreateUpdateViewModel vm)
         {
@@ -133,129 +151,66 @@ namespace Filminurk.Controllers
             {
                 ID = vm.ID,
                 Title = vm.Title,
-                Description = vm.Description,
                 FirstPublished = vm.FirstPublished,
-                Director = vm.Director,
-                Actors = vm.Actors,
-                CurrentRating = vm.CurrentRating,
-                Vulgar = vm.Vulgar,
                 Genre = vm.Genre,
-                IsOnAdultSwim = vm.IsOnAdultSwim,
+                CurrentRating = vm.CurrentRating,
+                Warnings = vm.Warnings,
+                Actors = vm.Actors,
                 EntryCreatedAt = vm.EntryCreatedAt,
                 EntryModifiedAt = vm.EntryModifiedAt,
+                Director = vm.Director,
+                Tagline = vm.Tagline,
+                Description = vm.Description,
                 Files = vm.Files,
-                FileToApiDtos = vm.Images
-                .Select(x => new FileToApiDTO
-                {
-                    MovieID = x.MovieID,
-                    ImageID = x.ImageID,
-                    FilePath = x.FilePath
-                }).ToArray()
+                Images = vm.Images.Select(x => new FileToApiDTO { ImageID = x.ImageID, FilePath = x.FilePath, MovieID = x.MovieID, IsPoster = x.IsPoster }).ToArray(),
             };
-            
-
             var result = await _movieServices.Update(dto);
-            
-            if (result == null)
+            if(result == null)
             {
                 return NotFound();
             }
-
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid ID)
         {
-            var movie = await _movieServices.DetailsAsync(id);
-
+            var movie = await _movieServices.DetailsAsync(ID);
             if (movie == null)
             {
                 return NotFound();
             }
-            
-            var images = await _context.FilesToApi
-                .Where(x => x.MovieID == id)
-                .Select(y => new ImageViewModel
-                {
-                    FilePath = y.ExistingFilePath,
-                    ImageID = y.ImageID
-                }).ToArrayAsync();
 
-            var vm = new MoviesDeleteViewModel();
+            var images = await _context.FilesToApi.Where(x => x.MovieID == ID).Select(y => new ImageViewModel { FilePath = y.ExistingFilePath, ImageID = y.ImageID }).ToArrayAsync();
+            var vm = new MovieDeleteViewModel();
+
             vm.ID = movie.ID;
             vm.Title = movie.Title;
-            vm.Description = movie.Description;
             vm.FirstPublished = movie.FirstPublished;
-            vm.Director = movie.Director;
-            vm.Actors = movie.Actors;
-            vm.CurrentRating = movie.CurrentRating;
-            vm.Vulgar = movie.Vulgar;
             vm.Genre = movie.Genre;
-            vm.IsOnAdultSwim = movie.IsOnAdultSwim;
+            vm.CurrentRating = movie.CurrentRating;
+            vm.Warnings = movie.Warnings;
+            vm.Actors = movie.Actors;
             vm.EntryCreatedAt = movie.EntryCreatedAt;
             vm.EntryModifiedAt = movie.EntryModifiedAt;
-
-            vm.Images.AddRange(images);
-            
+            vm.Director = movie.Director;
+            vm.Tagline = movie.Tagline;
+            vm.Description = movie.Description;
 
             return View(vm);
+            
         }
-
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirmation(Guid id)
+        public async Task<IActionResult> DeleteConfirmation(Guid ID)
         {
-            var movie = await _movieServices.Delete(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
+            var movie = await _movieServices.Delete(ID);
+            if (movie == null) { return NotFound(); }
             return RedirectToAction(nameof(Index));
-        }
 
-        [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
+        } 
+        private async Task<ImageViewModel[]> FileFromDatabase(Guid ID)
         {
-            var movie = await _movieServices.DetailsAsync(id);
-
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            ImageViewModel[] images = await FileFromDatabase(id);
-
-            var vm = new MoviesDetailsViewModel();
-            
-            vm.ID = movie.ID;
-            vm.Title = movie.Title;
-            vm.Description = movie.Description;
-            vm.FirstPublished = movie.FirstPublished;
-            vm.Director = movie.Director;
-            vm.Actors = movie.Actors;
-            vm.CurrentRating = movie.CurrentRating;
-            vm.Vulgar = movie.Vulgar;
-            vm.Genre = movie.Genre;
-            vm.IsOnAdultSwim = movie.IsOnAdultSwim;
-            vm.EntryCreatedAt = movie.EntryCreatedAt;
-            vm.EntryModifiedAt = movie.EntryModifiedAt;
-            vm.Images.AddRange(images);
-
-            return View(vm);
-        }
-
-        private async Task<ImageViewModel[]> FileFromDatabase(Guid id)
-        {
-            return await _context.FilesToApi
-                .Where(x => x.MovieID == id)
-                .Select(y => new ImageViewModel
-                {
-                    ImageID = y.ImageID,
-                    MovieID = y.MovieID,
-                    IsPoster = y.isPoster,
-                    FilePath = y.ExistingFilePath
-                }
-                ).ToArrayAsync();
-
+            return await _context.FilesToApi.Where(x => x.MovieID == ID).Select(y => new ImageViewModel{ ImageID = y.ImageID, MovieID = y.MovieID, IsPoster = y.IsPoster, FilePath = y.ExistingFilePath }).ToArrayAsync();
         }
     }
 }
