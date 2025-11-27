@@ -3,7 +3,6 @@ using Filminurk.Core.Domain;
 using Filminurk.Core.Dto;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
-using Filminurk.Data.Migrations;
 using Filminurk.Models.Actors;
 using Filminurk.Models.Movies;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,4 @@
 ﻿using Filminurk.Core.Domain;
-using Filminurk.Data.Migrations;
 using Filminurk.Models.Movies;
 using System.ComponentModel.DataAnnotations;
 
