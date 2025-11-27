@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Filminurk.Models.FavoriteLists.FavoriteListsIndexViewModel>
+
+@{
+	int rowNumber = 1;
+	int currentRow = 1;
+	int currentTile = 1;
+	int tilesInRow = 1;
+}
+<div>
+	<a asp-action="Create" asp-controller="FavoriteLists" class="btn btn-outline-primary">Tee uus Lemmikute Nimekiri</a>
+	<a asp-action="Index" asp-controller="Home" class="btn btn-primary">Pealeht</a>
+</div>
+<div> <!-- no class atm -->
+	<form method="post">
+		<table class="table">
+			<thead>
+				@if (!Model.Any())
+				{
+					<tr>
+						<th scope="col" colspan="2">
+							<span>
+								Kahjuks ei leidnud ühtegi lemmikute nimekirja.
+							</span>
+						</th>
+					</tr>
+				}
+				else
+				{
+					<tr>
+						<th scope="col" colspan="2">
+							<span>Sinu nimekirjad:</span>
+						</th>
+					</tr>
+				}
+			</thead>
+			<tbody>
+				@if (!Model.Any())
+				{
+					<table>
+						<tr>
+							<td colspan="2">Sorry, No list!</td>
+						</tr>
+						<tr>
+							<td><img width="128" src="~/lib/defaultassets/image/noposter.png"/></td>
+						</tr>
+					</table>
+				}
+				else
+				{
+					@foreach (var list in Model)
+					{
+						<table>
+							<tr>
+								<td colspan="2">
+									<a asp-action="ListDetailsListOwner" asp-controller="FavoriteLists" asp-route-id="@list.FavoriteListID" asp-route-thisuserid="@list.ListBelongsToUser">@list.ListName</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									@foreach (var image in list.Image)
+									{
+										<partial name="_ImageIndex" model="image"/>
+									}
+								</td>
+								<td>@list.Description</td>
+							</tr>
+						</table>
+						rowNumber++;
+					}
+				}
+			</tbody>
+		</table>
+	</form>
+</div>
+
+
+
+

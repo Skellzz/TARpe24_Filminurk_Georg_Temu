@@ -1,0 +1,61 @@
+﻿@model Filminurk.Models.UserComments.UserCommentIndexViewModel
+<h1>Vaata kommentaari.</h1>
+<div>
+	<h4>Info:</h4>
+	<hr />
+	<dl class="row">
+		<div class="form-group row">
+			<label asp-for="CommentID" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.CommentID)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group row">
+			<label asp-for="CommentBody" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.CommentBody)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group row">
+			<label asp-for="CommentedScore" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.CommentedScore)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group row">
+			<label asp-for="IsHelpful" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.IsHelpful)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group row">
+			<label asp-for="IsHarmFul" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.IsHarmFul)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group row">
+			<label asp-for="CommentCreatedAt" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.CommentCreatedAt)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group row">
+			<label asp-for="CommentModifiedAt" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.CommentModifiedAt)
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="form-group row">
+			<label asp-for="CommentDeletedAt" class="col-sm-2 col-form-label"></label>
+			@Html.DisplayFor(Model => Model.CommentDeletedAt)
+		</div>
+	</dl>
+	<hr />
+	<form method="post">
+		<input type="hidden" asp-for="CommentID" />
+		<input type="submit" value="Delete" asp-controller="UserComments" asp-action="DeleteAdminPost" asp-route-id="@Model.CommentID" class="btn btn-danger" />
+		<a asp-action="Index" asp-controller="UserComments" class="btn btn-primary">Tagasi</a>
+	</form>
+
+</div>
