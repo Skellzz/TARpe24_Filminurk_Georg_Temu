@@ -103,12 +103,13 @@ namespace Filminurk.Controllers
             {
                 convertedIDs = MovieToId(newListDto.ListOfMovies);
             }
-            var newLIst = await _FavouriteListsServices.Create(newListDto,
-                convertedIDs);
+            var newLIst = await _FavouriteListsServices.Create(newListDto
+                );
             if (newLIst != null)
             {
                 return BadRequest();
             }
+            return (IActionResult)newLIst;
         }
         private List<Guid> MovieToId(List<Movie> listOfMovies)
         {

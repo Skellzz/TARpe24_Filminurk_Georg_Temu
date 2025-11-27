@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-@* unustasin eraldi Pushida 😅 *@
+//unustasin eraldi Pushida 😅 
 namespace Filminurk.Core.Domain
 {
     public class Actor
