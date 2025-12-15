@@ -1,0 +1,31 @@
+﻿@model Filminurk.Models.Emails.EmailViewModel
+<div>
+	<form method="post" enctype="multipart/form-data">
+		<div class="form-group row">
+			<label asp-for="SendToThisAddress" class="col-sm2 col-form-label"></label>
+			<div class="col-sm-5"
+				<input asp-for="SendToThisAddress" class="form-controll"/>
+		</div>
+	</form>
+</div>
+<div>
+	<form method="post" enctype="multipart/form-data">
+		<div class="form-group row">
+			<label asp-for="EmailSubject" class="col-sm2 col-form-label"></label>
+			<div class="col-sm-5"
+				<input asp-for="EmailSubject" class="form-controll"/>
+		</div>
+	</form>
+</div>
+<div>
+	<form method="post" enctype="multipart/form-data">
+		<div class="form-group row">
+			<label asp-for="EmailContent" class="col-sm2 col-form-label"></label>
+			<div class="col-sm-5"
+				<input asp-for="EmailContent" class="form-controll"/>
+		</div>
+
+		<input asp-action="sendEmail" asp-controller="Email" type="submit" class="btn btn-primary" values="saada Kiri" />
+
+	</form>
+</div>

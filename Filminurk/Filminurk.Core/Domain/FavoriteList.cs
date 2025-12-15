@@ -17,6 +17,8 @@ namespace Filminurk.Core.Domain
         public string? Description { get; set; }
         public bool IsPrivate { get; set; }
         public List<Movie>? ListOfMovies { get; set; }
+
+        //
         public List<Actors>? ListOfActors { get; set; }
         public DateTime ListCreatedAt { get; set; }
         public DateTime? ListModifiedAt { get; set; }

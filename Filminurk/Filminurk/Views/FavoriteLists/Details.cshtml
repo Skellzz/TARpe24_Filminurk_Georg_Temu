@@ -7,17 +7,22 @@
 	{
 		@:Sinunimekiri rikub kogukonna reegleid<br/>
 		@:Oleme seadnud nimekirja privaatseks kuni admin selle üle vaatab.<br/>
+
 	}
 </div>
 <div>
 	<table>
 		<tr>@Model.ListName</tr>
 		<tr>@* <tr><partial name="_ImageIndex" model="@Model.Image"></partial></tr> *@IMAGE HERE</tr>
+		<tr>@Model.IsPrivate</tr>
 	</table>
+	
 </div>
 <div>
+	<form method="post">
 	<table class="table" style="border:solid">
-		@foreach (var movie in Model.ListOfMovies)
+		@if(Model.ListOfMovies != null){
+		foreach (var movie in Model.ListOfMovies)
 		{
 			<tr>
 				<table>
@@ -39,11 +44,15 @@
 				</table>
 			</tr>
 		}
+		}
 	</table>
 	<div>
 		<input asp-action="UserDelete" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" type="submit" class="btn btn-danger" value="Kustuta Nimekiri"/>
-		<input asp-action="UserTogglePrivacy" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" type="submit" class="btn btn-danger" value="Muuda nimekiri privaatseks" />
-		<input asp-action="UserEditList" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" type="submit" class="btn btn-danger" value="Muuda nimekirja sisu ja andmeid" />
-		<a asp-action="Index" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" type="submit" class="btn btn-danger" value="Kustuta Nimekiri">Tagasi</a>
+			<a asp-action="UserTogglePrivacy" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" type="submit" class="btn btn-danger" value="Muuda nimekiri privaatseks" />
+			@* <a asp-action="UserTogglePrivacy" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" formmethod="get"
+			class="btn btn-warning" asp-route-id="@Model.FavoriteListID" asp-route.thisuserid="@Model.ListBelongsToUser">Click</a> *@
+			<input asp-action="UserEditList" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" type="submit" class="btn btn-danger" value="Muuda nimekirja sisu ja andmeid" />
+			<a asp-action="Index" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" type="submit" class="btn btn-danger" value="Kustuta Nimekiri">Tagasi</a>
 	</div>
+	</form>
 </div>

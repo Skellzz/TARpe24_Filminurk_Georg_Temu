@@ -1,0 +1,46 @@
+﻿@model Filminurk.Models.FavoriteLists.FavoriteListUserDetailsViewModel
+@{
+	int rowNumber = 1;
+}
+<div>
+	<h1>USERTOGGLEPRIVACY</h1>
+	@if (Model.IsReported == true)
+	{
+		@:Sinunimekiri rikub kogukonna reegleid<br />
+		@:Oleme seadnud nimekirja privaatseks kuni admin selle üle vaatab.<br />
+
+	}
+</div>
+<div>
+	<form method="post">
+		<table class="table" style="border:solid">
+			@foreach (var movie in Model.ListOfMovies)
+			{
+				<tr>
+					<table>
+						<tr>
+							<td colspan="2">@movie.Title</td>
+						</tr>
+						<tr>
+							<td>IMAGE HERE</td>
+							<td>
+								<table>
+									<tr>@movie.Description</tr>
+									<tr>@movie.Director</tr>
+									<tr>@movie.Tagline</tr>
+									<tr>@movie.Genre</tr>
+									<tr>@movie.Warnings</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</tr>
+			}
+		</table>
+		<div>
+
+			<a asp-action="UserTogglePrivacy" asp-controller="FavoriteListsController" asp-route-id="@Model.FavoriteListID" type="submit" class="btn btn-danger" value="Muuda nimekiri privaatseks" />
+			
+		</div>
+	</form>
+</div>
