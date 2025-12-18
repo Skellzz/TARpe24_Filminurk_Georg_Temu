@@ -1,4 +1,6 @@
 ﻿using Azure.Identity;
+using Filminurk.Core.Domain;
+using Filminurk.Core.Dto;
 using Filminurk.Core.ServiceInterface;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Filminurk.ApplicationServices.Services
 {
-    internal class AccountsServices : IAccountsServices
+    public class AccountsServices : IAccountsServices
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -32,9 +34,9 @@ namespace Filminurk.ApplicationServices.Services
             var user = new ApplicationUser
             {
                 UserName = userDTO.Email,
-                EmailsServices = userDTO.Email,
+                Email = userDTO.Email,
                 ProfileType = userDTO.ProfileType,
-                DisplayNameAttribute = userDTO.DisplayName
+                DisplayName = userDTO.DisplayName
 
             };
             var result = await _userManager.CreateAsync(user, userDTO.Password);
@@ -47,7 +49,12 @@ namespace Filminurk.ApplicationServices.Services
         }
 
         // homewok location
-
+        public async Task<ApplicationUser> Login(LoginDTO userDTO)
+        {
+            var user = await _userManager.FindByEmailAsync(userDTO.Email);
+            return user;
+        }
     }
+    
 
 }
