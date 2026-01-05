@@ -1,7 +1,11 @@
 using Filminurk.ApplicationServices.Services;
+using Filminurk.Core.Domain;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +17,22 @@ builder.Services.AddScoped<IActorsServices, ActorsServices>();
 builder.Services.AddScoped<IUserCommentsServices, UserCommentsServices>();
 builder.Services.AddScoped<IFavoriteListsServices, FavoriteListsServices>();
 builder.Services.AddScoped<IEmailsServices, EmailsServices>();
-builder.Services.AddScoped<IAccountServices, AccountServices>();
+builder.Services.AddScoped<IAccountsServices, AccountsServices>();
 builder.Services.AddDbContext<FilminurkTARpe24Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(Options =>
+{
+    Options.SignIn.RequireConfirmedAccount = true;
+    Options.Password.RequiredLength = 8;
+
+    Options.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmation";
+    Options.Lockout.MaxFailedAccessAttempts = 5;
+    Options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    //Options.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<FilminurkTARpe24Context>()
+    .AddDefaultTokenProviders()
+    .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("CustomEmailConfirmation");
 
 
 var app = builder.Build();

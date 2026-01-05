@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Filminurk.Core.Dto;
+﻿using Filminurk.Core.Dto;
 using Filminurk.Core.ServiceInterface;
+using Filminurk.Data;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
-using MailKit.Net.Smtp;
-
-
-using Filminurk.Data;
 
 
 namespace Filminurk.ApplicationServices.Services

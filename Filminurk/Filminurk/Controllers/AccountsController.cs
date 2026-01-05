@@ -1,6 +1,8 @@
 ﻿using Azure.Identity;
+using Filminurk.Core.Domain;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
+using Filminurk.Models.Accounts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -23,7 +25,7 @@ namespace Filminurk.Controllers
             )
         {
             _userManager = userManager;
-            _singInManager = signInManager;
+            _signInManager = signInManager;
             _context = context;
         }
 
@@ -34,17 +36,17 @@ namespace Filminurk.Controllers
             var userHasPassword = await _userManager.HasPasswordAsync(user);
             if (userHasPassword)
             {
-                RedirectToAction"ChangePassword");
+                RedirectToAction("ChangePassword");
             }
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> AddPassword(AddPasswordViewModel model)
         {
-            if (ModelStates.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _userManager.AddPasswordAsync(user, model.Password);
+                var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
                 if (result.Succeeded)
                 {
                     foreach (var error in result.Errors)
@@ -74,7 +76,7 @@ namespace Filminurk.Controllers
                 {
                     return RedirectToAction("Login");
                 }
-                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.Password);
+                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
                     foreach (var error in result.Errors)
@@ -99,7 +101,7 @@ namespace Filminurk.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public async Task<IActionResult> ForgotPassword(forgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -192,7 +194,7 @@ namespace Filminurk.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new AookicationUser()
+                var user = new ApplicationUser()
                 {
                     UserName = model.Email,
                     Email = model.Email,
@@ -204,9 +206,9 @@ namespace Filminurk.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    var token = await _userManager.GenerateEailCOnfurmatuinTokenAsync(user);
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                    var confirmationLink = Url.Action("ConfirmEmail", "Accounts", new { userID = User.Id, token = token }, Request.Scheme);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Accounts", new { userID = user.Id, token = token }, Request.Scheme);
 
                     //HOMEWORK TASK: koosta email kasutajalt pärineva aadressile saatmiseks, kasutaja saab oma postkastist kätte emaili
                     //kinnituslingiga, mille jaoks kasutatakse tokenit. siin tuleb vökja kutsuda vastav, uus, emaili saatmise meetod, mis saadab
@@ -254,7 +256,7 @@ namespace Filminurk.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel model, string?, returnURL)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnURL)
         {
             if (ModelState.IsValid)
             {
@@ -265,7 +267,7 @@ namespace Filminurk.Controllers
                     return View(model);
                 }
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
-                if (result.succeeded)
+                if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(returnURL) && Url.IsLocalUrl(returnURL))
                     {

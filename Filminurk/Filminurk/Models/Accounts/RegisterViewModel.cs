@@ -11,7 +11,7 @@ namespace Filminurk.Models.Accounts
         public string Password { get; set; }
         [Display(Name = "Sisesta parool uuesti")]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Paroolid ei kattu, kontrolli et samad.")
+        [Compare("Password", ErrorMessage = "Paroolid ei kattu, kontrolli et samad.")]
         public string ConfirmPassword { get; set; }
 
         public string? DisplayName { get; set; }
