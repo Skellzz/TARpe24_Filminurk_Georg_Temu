@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Filminurk.Core.Domain;
 using Microsoft.AspNetCore.Http;
-
+// siin on ActorsDTO
 namespace Filminurk.Core.Dto
 {
     public class ActorsDTO

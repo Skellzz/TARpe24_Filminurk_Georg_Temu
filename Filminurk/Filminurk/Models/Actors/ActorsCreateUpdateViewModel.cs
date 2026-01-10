@@ -1,6 +1,6 @@
 ﻿using Filminurk.Core.Domain;
 using Filminurk.Core.Dto;
-
+//Siin on ACtorsCreateUpdateViewModel
 namespace Filminurk.Models.Actors
 {
     public class ActorsCreateUpdateViewModel

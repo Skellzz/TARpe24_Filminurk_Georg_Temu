@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Filminurk.Core.Domain;
 using Filminurk.Core.Dto;
-
+// siin on IActorsServices
 namespace Filminurk.Core.ServiceInterface
 {
     public interface IActorsServices

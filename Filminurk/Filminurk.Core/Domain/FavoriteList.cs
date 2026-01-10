@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+//siin on FavoriteList
 namespace Filminurk.Core.Domain
 {
     public class FavoriteList

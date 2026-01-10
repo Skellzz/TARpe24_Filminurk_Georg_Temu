@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Filminurk.Core.Domain;
 using Microsoft.AspNetCore.Http;
-
+// siin on FavoriteListDTO
 namespace Filminurk.Core.Dto
 {
     public class FavoriteListDTO

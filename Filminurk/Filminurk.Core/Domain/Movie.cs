@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+// siin on Movie
 namespace Filminurk.Core.Domain
 {
     public class Movie

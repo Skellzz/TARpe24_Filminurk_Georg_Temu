@@ -1,5 +1,5 @@
 ﻿using Filminurk.Core.Domain;
-
+//Siin on ActorsDeleteViewModel
 namespace Filminurk.Models.Actors
 {
     public class ActorsDeleteViewModel

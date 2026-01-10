@@ -7,7 +7,7 @@ using Filminurk.Models.Actors;
 using Filminurk.Models.Movies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+//SIIN ON ACTOR CONTROLLER 
 namespace Filminurk.Controllers
 {
     public class ActorsController : Controller
