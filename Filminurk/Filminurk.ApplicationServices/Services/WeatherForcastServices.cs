@@ -41,13 +41,13 @@ namespace Filminurk.ApplicationServices.Services
 
                 AccuLocationRootDTO weatherRootDTO = JsonSerializer.Deserialize<AccuLocationRootDTO>(jsonWeatherResponse);
 
-                dto.EffectiveDate = weatherRootDTO.Headline.EffectiveDate;
+                dto.EffectiveDate = weatherRootDTO.Headline.EffectiveDate.ToString();
                 dto.EffectiveEpochDate = weatherRootDTO.Headline.EffectiveEpochDate;
                 dto.Severity = weatherRootDTO.Headline.Severity;
                 dto.Text = weatherRootDTO.Headline.Text;
                 dto.Category = weatherRootDTO.Headline.Category;
-                dto.EndDate = weatherRootDTO.Headline.EndDate;
-                dto.EndEpochDate = weatherRootDTO.Headline.EndEpochDate;
+                dto.EndDate = weatherRootDTO.Headline.EndDate.ToString();
+                dto.EndEpochDate = weatherRootDTO.Headline.EndEpochDate.ToString();
                 dto.MobileLink = weatherRootDTO.Headline.MobileLink;
                 dto.Link = weatherRootDTO.Headline.Link;
                 dto.DailyForecasts = JsonSerializer.Serialize(weatherRootDTO.DailyForecasts[0]);
@@ -56,6 +56,7 @@ namespace Filminurk.ApplicationServices.Services
                 dto.TempMinUnit = weatherRootDTO.DailyForecasts[0].Temperature.Minimum.Unit;
                 
             }
+            return dto;
         }
     }
 }

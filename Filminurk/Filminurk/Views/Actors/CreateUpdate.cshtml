@@ -51,9 +51,9 @@ else
 		</div>
 		<!-- Genre -->
 		<div class="form-group row">
-			<label asp-for="FavoriteGenre" class="col-sm-2 col-form-label"></label>
+			<label asp-for="MostActedGenre" class="col-sm-2 col-form-label"></label>
 			<div class="col-sm-10">
-				<select asp-for="FavoriteGenre" asp-items="Html.GetEnumSelectList<Genre>()">
+				<select asp-for="MostActedGenre" asp-items="Html.GetEnumSelectList<Genre>()">
 					<option value="">-- Select Genre --</option>
 				</select>
 			</div>

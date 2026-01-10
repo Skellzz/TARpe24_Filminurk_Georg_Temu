@@ -14,16 +14,16 @@ namespace Filminurk.ApplicationServices.Services
     public class ActorsServices : IActorsServices
     {
         private readonly FilminurkTARpe24Context _context;
-        private readonly IFilesServices _filesServices; // failid
+        private readonly IFilesServices _filesServices;
 
         public ActorsServices
             (
             FilminurkTARpe24Context context,
-            IFilesServices filesServices // failid
+            IFilesServices filesServices 
             )
         {
             _context = context;
-            _filesServices = filesServices; // failid
+            _filesServices = filesServices; 
         }
 
         public async Task<Actors> Create(ActorsDTO dto)
@@ -37,7 +37,7 @@ namespace Filminurk.ApplicationServices.Services
             actors.PortraitID = dto.PortraitID.ToString();
             actors.ActorRating = dto.ActorRating;
             actors.Gender = dto.Gender;
-            actors.FavoriteGenre = dto.FavoriteGenre;
+            actors.MostActedGenre = dto.MostActedGenre;
             actors.EntryCreatedAt = DateTime.Now;
             actors.EntryModifiedAt = DateTime.Now;
             //_filesServices.FilesToApi(dto, actors);
@@ -65,7 +65,7 @@ namespace Filminurk.ApplicationServices.Services
             actors.PortraitID = dto.PortraitID.ToString();
             actors.ActorRating = dto.ActorRating;
             actors.Gender = dto.Gender;
-            actors.FavoriteGenre = dto.FavoriteGenre;
+            actors.MostActedGenre = dto.MostActedGenre;
             actors.EntryCreatedAt = DateTime.Now;
             actors.EntryModifiedAt = DateTime.Now;
             //_filesServices.FilesToApi(dto, actors);

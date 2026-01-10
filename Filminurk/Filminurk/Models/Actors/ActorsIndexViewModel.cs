@@ -9,9 +9,9 @@ namespace Filminurk.Models.Actors
         public string? LastName { get; set; }
         public string? NickName { get; set; }
 
-        /* Kolm minu mõeldud asju */
+ 
         public int? ActorRating { get; set; }
         public Gender? Gender { get; set; }
-        public Genre? FavoriteGenre { get; set; }
+        public Genre? MostActedGenre { get; set; }
     }
 }

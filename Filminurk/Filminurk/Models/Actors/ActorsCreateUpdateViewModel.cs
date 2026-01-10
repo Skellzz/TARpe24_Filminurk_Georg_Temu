@@ -14,10 +14,10 @@ namespace Filminurk.Models.Actors
         public List<IFormFile>? Files { get; set; }
         public IEnumerable<FileToApiDTO>? Images { get; set; } = new List<FileToApiDTO>();
 
-        /* Kolm minu mõeldud asju */
+     
         public int? ActorRating { get; set; }
         public Gender? Gender { get; set; }
-        public Genre? FavoriteGenre { get; set; }
+        public Genre? MostActedGenre { get; set; }
         public DateTime? EntryCreatedAt { get; set; }
         public DateTime? EntryModifiedAt { get; set; }
     }

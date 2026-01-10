@@ -30,8 +30,8 @@ namespace Filminurk.Controllers
                 LastName = x.LastName,                                              
                 NickName = x.NickName,                                              
                 ActorRating = x.ActorRating,                                        
-                Gender = x.Gender,                                                  
-                FavoriteGenre = x.FavoriteGenre                                     
+                Gender = x.Gender,
+                MostActedGenre = x.MostActedGenre
             });                                                                     
             return View(result);                                                    
         }                                                                           
@@ -82,7 +82,7 @@ namespace Filminurk.Controllers
                 dto.MoviesActedFor = vm.MoviesActedFor;
                 dto.ActorRating = vm.ActorRating;
                 dto.Gender = vm.Gender;
-                dto.FavoriteGenre = vm.FavoriteGenre;
+                dto.MostActedGenre = vm.MostActedGenre;
                 dto.Files = vm.Files;
                 /*dto.PortraitID = Guid.Parse(vm.PortraitID);
                 dto.Images = vm.Images.Select(x => new FileToApiDTO
@@ -122,7 +122,7 @@ namespace Filminurk.Controllers
             vm.MoviesActedFor = actors.MoviesActedFor;
             vm.ActorRating = actors.ActorRating;
             vm.Gender = actors.Gender;
-            vm.FavoriteGenre = actors.FavoriteGenre;
+            vm.MostActedGenre = actors.MostActedGenre;
             vm.PortraitID = actors.PortraitID;
             vm.EntryCreatedAt = actors.EntryCreatedAt;
             vm.EntryModifiedAt = actors.EntryModifiedAt;
@@ -146,7 +146,7 @@ namespace Filminurk.Controllers
             vm.MoviesActedFor = actors.MoviesActedFor;
             vm.ActorRating = actors.ActorRating;
             vm.Gender = actors.Gender;
-            vm.FavoriteGenre = actors.FavoriteGenre;
+            vm.MostActedGenre = actors.MostActedGenre;
             vm.PortraitID = actors.PortraitID?.ToString();
             vm.EntryCreatedAt = actors.EntryCreatedAt;
             vm.EntryModifiedAt = actors.EntryModifiedAt;
@@ -164,7 +164,7 @@ namespace Filminurk.Controllers
                 MoviesActedFor = vm.MoviesActedFor,
                 ActorRating = vm.ActorRating,
                 Gender = vm.Gender,
-                FavoriteGenre = vm.FavoriteGenre,
+                MostActedGenre = vm.MostActedGenre,
                 PortraitID = string.IsNullOrEmpty(vm.PortraitID)
                 ? (Guid?)null
                 : Guid.Parse(vm.PortraitID) 
@@ -202,7 +202,7 @@ namespace Filminurk.Controllers
             vm.MoviesActedFor = actors.MoviesActedFor;
             vm.ActorRating = actors.ActorRating;
             vm.Gender = actors.Gender;
-            vm.FavoriteGenre = actors.FavoriteGenre;
+            vm.MostActedGenre = actors.MostActedGenre;
             vm.PortraitID = actors.PortraitID;
             vm.EntryCreatedAt = actors.EntryCreatedAt;
             vm.EntryModifiedAt = actors.EntryModifiedAt;
