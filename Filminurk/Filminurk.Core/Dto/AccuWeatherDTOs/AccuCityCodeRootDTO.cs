@@ -21,13 +21,10 @@ namespace Filminurk.Core.Dto.AccuWeather
         public Country? Country { get; set; }
         public AdministrativeArea? AdministrativeArea { get; set; }
         public TimeZone? TimeZone { get; set; }
-        public Geoposition? Geoposition { get; set; }
+        public GeoPosition? GeoPosition { get; set; }
         public bool IsAlias { get; set; }
         public SupplementalAdminArea[]? SupplementalAdminAreas { get; set; }
         public string[]? DataSets { get; set; }
-
-
-        
 
 
     }
@@ -63,15 +60,14 @@ namespace Filminurk.Core.Dto.AccuWeather
         public DateTime NextOffsetChange { get; set; }
 
     }
-    public class Geoposition
+    public class GeoPosition
     {
         public float Latitude { get; set; }
         public float Longitude { get; set; }
-        public float Elevation { get; set; }
+        public Elevation? Elevation { get; set; }
     }
     public class SupplementalAdminArea
-    
-        {
+    {
         public string Level { get; set; } = string.Empty;
         public string LocalizedName { get; set; } = string.Empty;
         public string EnglishName { get; set; } = string.Empty;
