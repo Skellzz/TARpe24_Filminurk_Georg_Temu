@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Filminurk.Data.Migrations
 {
     [DbContext(typeof(FilminurkTARpe24Context))]
-    [Migration("20260110094244_init")]
-    partial class init
+    [Migration("20260115123017_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,9 +40,6 @@ namespace Filminurk.Data.Migrations
                     b.Property<DateTime?>("EntryModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("FavoriteGenre")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("FavoriteListID")
                         .HasColumnType("uniqueidentifier");
 
@@ -56,6 +53,9 @@ namespace Filminurk.Data.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MostActedGenre")
+                        .HasColumnType("int");
 
                     b.Property<string>("MoviesActedFor")
                         .IsRequired()
