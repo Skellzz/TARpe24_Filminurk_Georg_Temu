@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Filminurk.Core.Dto.MovieImportDTOs
 {
-    internal class MovieCreateDTO
+    public class MovieCreateDTO
     {
+
     }
 }
