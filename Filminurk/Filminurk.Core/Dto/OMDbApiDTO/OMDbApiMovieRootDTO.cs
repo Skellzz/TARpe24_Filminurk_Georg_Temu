@@ -6,7 +6,18 @@ using System.Threading.Tasks;
 
 namespace Filminurk.Core.Dto.OMDbApiDTO
 {
-    internal class OMDbApiMovieRootDTO
+    public class OMDbApiMovieRootDTO
     {
+        public class Root
+        {
+            public string Title { get; set; }
+            public string FirstPublished { get; set; }
+            public string Genre { get; set; }
+            public string Producer { get; set; }
+            public string Actors { get; set; }
+            public string Description { get; set; }
+            public string imdbRating { get; set; }
+
+        }
     }
 }
