@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Filminurk.Core.Dto.MovieImportDTOs
+namespace Filminurk.Core.ServiceInterface
 {
-    public class MovieCreateDTO
+    internal interface IOMDbApiServices
     {
-
     }
 }

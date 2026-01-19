@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Filminurk.Core.Dto.MovieImportDTOs
+namespace Filminurk.Core.Dto.OMDbApiDTO
 {
-    public class OMDbMovieDTO
+    internal class OMDbApiMovieResultDTO
     {
     }
 }
