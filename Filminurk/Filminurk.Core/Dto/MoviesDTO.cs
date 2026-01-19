@@ -18,6 +18,8 @@ namespace Filminurk.Core.Dto
         public List<string>? Actors { get; set; }
         public double? CurrentRating { get; set; }
 
+        public string? PosterUrl { get; set; }
+        public string? ImdbId { get; set; }
         public List<IFormFile> Files { get; set; }
         public IEnumerable<FileToApiDTO> Images { get; set; } =  new List<FileToApiDTO>();
 
@@ -25,6 +27,7 @@ namespace Filminurk.Core.Dto
         public string? Tagline { get; set; }
         public string? Warnings { get; set; }
         /* Andmebaasi jaoks vajalikud */
+   
         public DateTime? EntryCreatedAt { get; set; }
         public DateTime? EntryModifiedAt { get; set; }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Filminurk.Core.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Filminurk.Core.ServiceInterface
 {
-    internal interface IMovieImportService
+    public interface IMovieImportService
     {
+        Task<MoviesDTO> ImportMovieByTitleAsync(string title);
     }
 }
