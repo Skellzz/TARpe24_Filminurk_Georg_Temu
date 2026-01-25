@@ -1,5 +1,6 @@
 ﻿using Filminurk.Core.Domain;
 using Filminurk.Core.Dto.OMDbApiDTO;
+using Filminurk.Core.Dto.OmdbapiDTOs;
 using Filminurk.Core.ServiceInterface;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,17 @@ namespace Filminurk.ApplicationServices.Services
 {
     public class OmdbServices : IOMDbApiServices
     {
-        
+        public Task<OmdbApiMovieResultDTO?> FetchByTitleAsync(string title, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
 
-        public async Task<OMDbApiMovieResultDTO> OmdbapiResult(OMDbApiMovieResultDTO dto)
+        public Task<Guid?> ImportByTitleAsync(string title, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<OmdbApiMovieResultDTO> OmdbapiResult(OmdbApiMovieResultDTO dto)
         {
             string apikey = Filminurk.Data.Enviroment.accuweatherkey;
             var baseUrl = "https://dataservice.accuweather.com/forecasts/v1/daily/1day/";
@@ -58,7 +67,7 @@ namespace Filminurk.ApplicationServices.Services
             throw new NotImplementedException();
         }
 
-        Task<OMDbApiMovieResultDTO> IOMDbApiServices.OMDbApiResult(OMDbApiMovieResultDTO dto)
+        Task<OmdbApiMovieResultDTO> IOMDbApiServices.OMDbApiResult(OmdbApiMovieResultDTO dto)
         {
             throw new NotImplementedException();
         }
