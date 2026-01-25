@@ -1,75 +1,122 @@
-﻿using Filminurk.Core.Domain;
-using Filminurk.Core.Dto.OMDbApiDTO;
+﻿using Filminurk.Core.Domain;               // Genre enum (sinu projektis olemas)
+using Filminurk.Core.Dto;                 // MoviesDTO (sinu projektis olemas)
 using Filminurk.Core.Dto.OmdbapiDTOs;
 using Filminurk.Core.ServiceInterface;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.Globalization;
 using System.Text.Json;
-using System.Threading.Tasks;
-using static Filminurk.Core.Dto.OMDbApiDTO.OMDbApiMovieRootDTO;
+using System.Web;
 
 namespace Filminurk.ApplicationServices.Services
 {
-    public class OmdbServices : IOMDbApiServices
+    public class OMDbApiServices : IOMDbApiServices
     {
-        public Task<OmdbApiMovieResultDTO?> FetchByTitleAsync(string title, CancellationToken ct = default)
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _config;
+        private readonly IMovieServices _movieServices;
+
+        public OMDbApiServices(HttpClient httpClient, IConfiguration config, IMovieServices movieServices)
         {
-            throw new NotImplementedException();
+            _httpClient = httpClient;
+            _config = config;
+            _movieServices = movieServices;
         }
 
-        public Task<Guid?> ImportByTitleAsync(string title, CancellationToken ct = default)
+        public async Task<OmdbApiMovieResultDTO?> FetchByTitleAsync(string title, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
-        }
+            if (string.IsNullOrWhiteSpace(title)) return null;
 
-        public async Task<OmdbApiMovieResultDTO> OmdbapiResult(OmdbApiMovieResultDTO dto)
-        {
-            string apikey = Filminurk.Data.Enviroment.accuweatherkey;
-            var baseUrl = "https://dataservice.accuweather.com/forecasts/v1/daily/1day/";
-            var cityUrl = $"https://dataservice.accuweather.com/locations/v1/cities/search";
+            var baseUrl = _config["OmDb:BaseUrl"]?.Trim();
+            var apiKey = _config["OmDb:ApiKey"]?.Trim();
 
-            using (var httpClient = new HttpClient())
-            {
-                httpClient.BaseAddress = new Uri(cityUrl);
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(
-                    new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json")
-                );
-                var response = httpClient.GetAsync($"?q={dto.Title}&apikey={apikey}&details=true").GetAwaiter().GetResult();
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    List<Root> omdbData = JsonSerializer.Deserialize<List<Root>>(jsonResponse);
-                    dto.Title = omdbData[0].Title;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            string omdbResponse = baseUrl + $"{dto.Title}?apikey={apikey}";
+            if (string.IsNullOrWhiteSpace(baseUrl) || string.IsNullOrWhiteSpace(apiKey))
+                throw new InvalidOperationException("OMDb seaded puuduvad. Kontrolli appsettings.json (OmDb:BaseUrl, OmDb:ApiKey).");
 
-            using (var clientWeather = new HttpClient())
-            {
-                var httpResponseOmdb = clientWeather.GetAsync(omdbResponse).GetAwaiter().GetResult();
-                string jsonOmdb = await httpResponseOmdb.Content.ReadAsStringAsync();
+            var encodedTitle = HttpUtility.UrlEncode(title.Trim());
+            var url = $"{baseUrl}?apikey={apiKey}&t={encodedTitle}&plot=full";
 
-                Root omdbRootDTO = JsonSerializer.Deserialize<Root>(jsonOmdb);
+            using var resp = await _httpClient.GetAsync(url, ct);
+            if (!resp.IsSuccessStatusCode) return null;
 
-            }
+            var json = await resp.Content.ReadAsStringAsync(ct);
+
+            var dto = JsonSerializer.Deserialize<OmdbApiMovieResultDTO>(
+                json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+
+            // OMDb annab Response="False" kui ei leitud
+            if (dto == null) return null;
+            if (!string.Equals(dto.Response, "True", StringComparison.OrdinalIgnoreCase)) return dto;
+
             return dto;
         }
 
-
-        Movie IOMDbApiServices.Create(OMDbApiMovieCreateDTO dto)
+        public async Task<Guid?> ImportByTitleAsync(string title, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var omdb = await FetchByTitleAsync(title, ct);
+            if (omdb == null) return null;
+
+            if (!string.Equals(omdb.Response, "True", StringComparison.OrdinalIgnoreCase))
+                return null; // ei leitud vms (omdb.Error sees)
+
+            // Map OMDb -> meie MoviesDTO
+            var movieDto = MapToMoviesDto(omdb);
+
+            // Create läbi olemasoleva IMovieServices (sama nagu MoviesController teeb)
+            var created = await _movieServices.Create(movieDto);
+
+            return created?.ID;
         }
 
-        Task<OmdbApiMovieResultDTO> IOMDbApiServices.OMDbApiResult(OmdbApiMovieResultDTO dto)
+        private static MoviesDTO MapToMoviesDto(OmdbApiMovieResultDTO omdb)
         {
-            throw new NotImplementedException();
+            // Released -> DateOnly
+            DateOnly firstPublished = DateOnly.MinValue;
+            if (!string.IsNullOrWhiteSpace(omdb.Released) && !string.Equals(omdb.Released, "N/A", StringComparison.OrdinalIgnoreCase))
+            {
+                // OMDb kuupäev on tavaliselt "31 Mar 1999"
+                if (DateOnly.TryParse(omdb.Released, new CultureInfo("en-US"), DateTimeStyles.None, out var parsed))
+                    firstPublished = parsed;
+            }
+
+            // imdbRating -> double
+            double rating = 0;
+            if (!string.IsNullOrWhiteSpace(omdb.ImdbRating) && !string.Equals(omdb.ImdbRating, "N/A", StringComparison.OrdinalIgnoreCase))
+            {
+                _ = double.TryParse(omdb.ImdbRating, NumberStyles.Any, CultureInfo.InvariantCulture, out rating);
+            }
+
+            // Genre string -> meie Genre enum (võtame esimese žanri)
+            var genre = Genre.Other;
+            var firstGenre = (omdb.Genre ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
+            if (!string.IsNullOrWhiteSpace(firstGenre) && Enum.TryParse<Genre>(firstGenre, ignoreCase: true, out var parsedGenre))
+                genre = parsedGenre;
+
+            // Actors -> List<string>
+            var actors = (omdb.Actors ?? "")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(a => a.Trim())
+                .Where(a => a.Length > 0)
+                .ToList();
+
+            var dto = new MoviesDTO
+            {
+                ID = Guid.NewGuid(),
+                Title = omdb.Title ?? "(Unknown title)",
+                Description = omdb.Plot ?? "",
+                FirstPublished = firstPublished,
+                Director = omdb.Director ?? "",
+                Actors = actors,
+                CurrentRating = rating,
+                Genre = genre,
+                Tagline = "",               // OMDb taglinet ei anna; võid jätta tühjaks
+                Warnings = "",              // kui sul vajalik, jäta tühjaks
+                EntryCreatedAt = DateTime.Now,
+                EntryModifiedAt = DateTime.Now
+            };
+
+            return dto;
         }
     }
 }
