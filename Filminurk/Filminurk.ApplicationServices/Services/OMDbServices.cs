@@ -1,5 +1,6 @@
-﻿using Filminurk.Core.Domain;               // Genre enum (sinu projektis olemas)
-using Filminurk.Core.Dto;                 // MoviesDTO (sinu projektis olemas)
+﻿using Filminurk.Core.Domain;              
+using Filminurk.Core.Dto;                 
+using Filminurk.Core.Dto.OMDbApiDTO;
 using Filminurk.Core.Dto.OmdbapiDTOs;
 using Filminurk.Core.ServiceInterface;
 using Microsoft.Extensions.Configuration;
@@ -45,7 +46,7 @@ namespace Filminurk.ApplicationServices.Services
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
             );
 
-            // OMDb annab Response="False" kui ei leitud
+          
             if (dto == null) return null;
             if (!string.Equals(dto.Response, "True", StringComparison.OrdinalIgnoreCase)) return dto;
 
@@ -58,12 +59,11 @@ namespace Filminurk.ApplicationServices.Services
             if (omdb == null) return null;
 
             if (!string.Equals(omdb.Response, "True", StringComparison.OrdinalIgnoreCase))
-                return null; // ei leitud vms (omdb.Error sees)
+                return null; 
 
-            // Map OMDb -> meie MoviesDTO
             var movieDto = MapToMoviesDto(omdb);
 
-            // Create läbi olemasoleva IMovieServices (sama nagu MoviesController teeb)
+           
             var created = await _movieServices.Create(movieDto);
 
             return created?.ID;
@@ -71,29 +71,27 @@ namespace Filminurk.ApplicationServices.Services
 
         private static MoviesDTO MapToMoviesDto(OmdbApiMovieResultDTO omdb)
         {
-            // Released -> DateOnly
             DateOnly firstPublished = DateOnly.MinValue;
             if (!string.IsNullOrWhiteSpace(omdb.Released) && !string.Equals(omdb.Released, "N/A", StringComparison.OrdinalIgnoreCase))
             {
-                // OMDb kuupäev on tavaliselt "31 Mar 1999"
                 if (DateOnly.TryParse(omdb.Released, new CultureInfo("en-US"), DateTimeStyles.None, out var parsed))
                     firstPublished = parsed;
             }
 
-            // imdbRating -> double
+           
             double rating = 0;
             if (!string.IsNullOrWhiteSpace(omdb.ImdbRating) && !string.Equals(omdb.ImdbRating, "N/A", StringComparison.OrdinalIgnoreCase))
             {
                 _ = double.TryParse(omdb.ImdbRating, NumberStyles.Any, CultureInfo.InvariantCulture, out rating);
             }
 
-            // Genre string -> meie Genre enum (võtame esimese žanri)
+          
             var genre = Genre.Other;
             var firstGenre = (omdb.Genre ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
             if (!string.IsNullOrWhiteSpace(firstGenre) && Enum.TryParse<Genre>(firstGenre, ignoreCase: true, out var parsedGenre))
                 genre = parsedGenre;
 
-            // Actors -> List<string>
+          
             var actors = (omdb.Actors ?? "")
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(a => a.Trim())
@@ -110,13 +108,23 @@ namespace Filminurk.ApplicationServices.Services
                 Actors = actors,
                 CurrentRating = rating,
                 Genre = genre,
-                Tagline = "",               // OMDb taglinet ei anna; võid jätta tühjaks
-                Warnings = "",              // kui sul vajalik, jäta tühjaks
+                Tagline = "",               
+                Warnings = "",              
                 EntryCreatedAt = DateTime.Now,
                 EntryModifiedAt = DateTime.Now
             };
 
             return dto;
+        }
+
+        Task<OmdbApiMovieResultDTO> IOMDbApiServices.OMDbApiResult(OmdbApiMovieResultDTO dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        Movie IOMDbApiServices.Create(OMDbApiMovieCreateDTO dto)
+        {
+            throw new NotImplementedException();
         }
     }
 }
