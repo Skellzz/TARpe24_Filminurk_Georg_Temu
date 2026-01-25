@@ -1,2 +1,2 @@
-# Filminurk_Kaur_TARpe24
+# SIGMA IN DISGUISE
 projekt kus kasutaja saab osta filme ja arvustada neid.
