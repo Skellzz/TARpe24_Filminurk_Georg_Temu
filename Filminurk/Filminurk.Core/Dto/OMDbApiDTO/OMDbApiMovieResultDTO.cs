@@ -4,16 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Filminurk.Core.Dto.OMDbApiDTO
+using System.Text.Json.Serialization;
+
+namespace Filminurk.Core.Dto.OmdbapiDTOs
 {
-    public class OMDbApiMovieResultDTO
+    public class OmdbApiMovieResultDTO
     {
-        public string Title { get; set; }
-        public string FirstPublished { get; set; } = string.Empty;
-        public string Genre { get; set; }
-        public string Director { get; set; }
-        public string Actors { get; set; }
-        public string Description { get; set; }
-        public string imdbRating { get; set; }
+        [JsonPropertyName("Response")]
+        public string? Response { get; set; } 
+        [JsonPropertyName("Error")]
+        public string? Error { get; set; }
+
+        [JsonPropertyName("Title")]
+        public string? Title { get; set; }
+
+        [JsonPropertyName("Released")]
+        public string? Released { get; set; } 
+
+        [JsonPropertyName("Genre")]
+        public string? Genre { get; set; }
+
+        [JsonPropertyName("Director")]
+        public string? Director { get; set; }
+
+        [JsonPropertyName("Actors")]
+        public string? Actors { get; set; }
+
+        [JsonPropertyName("Plot")]
+        public string? Plot { get; set; }
+
+        [JsonPropertyName("imdbRating")]
+        public string? ImdbRating { get; set; }
     }
 }
