@@ -1,5 +1,6 @@
 ﻿using Azure.Identity;
 using Filminurk.Core.Domain;
+using Filminurk.Core.Dto;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
 using Filminurk.Models.Accounts;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto;
 using System.Reflection.Metadata.Ecma335;
 
 namespace Filminurk.Controllers
@@ -207,12 +209,15 @@ namespace Filminurk.Controllers
                 if (result.Succeeded)
                 {
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
                     var confirmationLink = Url.Action("ConfirmEmail", "Accounts", new { userID = user.Id, token = token }, Request.Scheme);
 
-                    //HOMEWORK TASK: koosta email kasutajalt pärineva aadressile saatmiseks, kasutaja saab oma postkastist kätte emaili
-                    //kinnituslingiga, mille jaoks kasutatakse tokenit. siin tuleb vökja kutsuda vastav, uus, emaili saatmise meetod, mis saadab
-                    //õige sisuga kirja
+                    var dto = new EmailDTO() {
+                        SendToThisAddress = user.Email,
+                        EmailSubject = "Registraition Confirmation",
+                        EmailContent = $"ANSWER MEEEEE. \n{confirmationLink}"
+                    };
+                    _emailsServices.SendEmail(dto);
+                        
                 }
                 return RedirectToAction("Index", "Home");
                 //
@@ -243,6 +248,13 @@ namespace Filminurk.Controllers
 
 
         }
+        [HttpPost]
+        [ActionName("ConfirmEmail")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmailPost(string userId, string token)
+        {
+            return RedirectToAction("LoginPost");
+        }
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string? returnURL)
@@ -255,6 +267,7 @@ namespace Filminurk.Controllers
         }
 
         [HttpPost]
+        [ActionName("LoginPost")]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnURL)
         {
