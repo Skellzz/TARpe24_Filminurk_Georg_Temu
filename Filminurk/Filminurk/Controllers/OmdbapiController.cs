@@ -29,7 +29,7 @@ namespace Filminurk.Controllers
             _omdbapiServices = omdbapiServices;
         }
 
-        [HttpGet]
+        [HttpGet] 
         public IActionResult Index()
         {
             return View(new OMDbApiSearchViewModel());
