@@ -224,7 +224,7 @@ namespace Filminurk.Data.Migrations
                     PortraitID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ActorRating = table.Column<int>(type: "int", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
-                    FavoriteGenre = table.Column<int>(type: "int", nullable: true),
+                    MostActedGenre = table.Column<int>(type: "int", nullable: true),
                     EntryCreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EntryModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FavoriteListID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)

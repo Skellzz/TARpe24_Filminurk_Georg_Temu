@@ -37,9 +37,6 @@ namespace Filminurk.Data.Migrations
                     b.Property<DateTime?>("EntryModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("FavoriteGenre")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("FavoriteListID")
                         .HasColumnType("uniqueidentifier");
 
@@ -53,6 +50,9 @@ namespace Filminurk.Data.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MostActedGenre")
+                        .HasColumnType("int");
 
                     b.Property<string>("MoviesActedFor")
                         .IsRequired()
