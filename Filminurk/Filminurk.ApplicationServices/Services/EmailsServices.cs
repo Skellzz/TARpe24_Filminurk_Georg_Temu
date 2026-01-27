@@ -17,6 +17,7 @@ namespace Filminurk.ApplicationServices.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+
         public EmailsServices(UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;

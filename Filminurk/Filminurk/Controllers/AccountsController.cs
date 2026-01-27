@@ -1,15 +1,11 @@
-﻿using Azure.Identity;
-using Filminurk.Core.Domain;
+﻿using Filminurk.Core.Domain;
 using Filminurk.Core.Dto;
 using Filminurk.Core.ServiceInterface;
 using Filminurk.Data;
 using Filminurk.Models.Accounts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Crypto;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Filminurk.Controllers
 {
@@ -18,124 +14,151 @@ namespace Filminurk.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly FilminurkTARpe24Context _context;
-        private readonly IEmailsServices _emailsServices; //Homework location
+        private readonly IEmailsServices _emailsServices;
 
         public AccountsController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            FilminurkTARpe24Context context
-            )
+            FilminurkTARpe24Context context,
+            IEmailsServices emailsServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _emailsServices = emailsServices;
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> AddPassword()
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction(nameof(Login));
+
             var userHasPassword = await _userManager.HasPasswordAsync(user);
             if (userHasPassword)
             {
-                RedirectToAction("ChangePassword");
+                return RedirectToAction(nameof(ChangePassword));
             }
+
             return View();
         }
+
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddPassword(AddPasswordViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction(nameof(Login));
+
+            var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
+            if (!result.Succeeded)
             {
-                var user = await _userManager.GetUserAsync(User);
-                var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
-                if (result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                    return View(model);
-                }
-                await _signInManager.RefreshSignInAsync(user);
-                return View("AddPasswordConfirmation");
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View(model);
             }
-            return View(model);
+
+            await _signInManager.RefreshSignInAsync(user);
+            return View("AddPasswordConfirmation");
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult ChangePassword()
         {
             return View();
         }
+
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction(nameof(Login));
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!result.Succeeded)
             {
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    return RedirectToAction("Login");
-                }
-                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-                if (result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
-                await _signInManager.RefreshSignInAsync(user);
-                return View("ChangePasswordConfirmation");
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
 
+                return View(model);
             }
-            return View(model);
 
+            await _signInManager.RefreshSignInAsync(user);
+            return View("ChangePasswordConfirmation");
         }
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
-            return View();
+            return View(new forgotPasswordViewModel());
         }
 
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(forgotPasswordViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null && await _userManager.IsEmailConfirmedAsync(user))
-                {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var passwordResetLink = Url.Action("ResetPassword", "Accounts",
-                        new { email = model.Email, token = token }, Request.Scheme);
-                    return View("ForgotPasswordConfirmation");
+            if (!ModelState.IsValid)
+                return View(model);
 
-                }
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
                 return View("ForgotPasswordConfirmation");
             }
-            return View(model);
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetLink = Url.Action(
+                nameof(ResetPassword),
+                "Accounts",
+                new { email = user.Email, token = token },
+                Request.Scheme);
+
+            var dto = new EmailDTO
+            {
+                SendToThisAddress = user.Email!,
+                EmailSubject = "Password reset",
+                EmailContent = "Click to reset your password: " + resetLink
+            };
+            _emailsServices.SendEmail(dto);
+
+            return View("ForgotPasswordConfirmation");
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword()
+        public IActionResult ForgotPasswordConfirmation()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            if (token == null || user.Email == null)
+            return View();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
             {
-                ModelState.AddModelError("", "Invalid password reset token");
+                return BadRequest("Invalid password reset link.");
             }
+
             var model = new ResetPasswordViewModel
             {
-                Token = token,
-                Email = user.Email
+                Email = email,
+                Token = token
             };
+
             return View(model);
         }
 
@@ -143,35 +166,31 @@ namespace Filminurk.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
             {
-
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    var Results = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
-                    if (Results.Succeeded)
-                    {
-                        if (await _userManager.IsLockedOutAsync(user))
-                        {
-                            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
-                        }
-                        await _signInManager.SignOutAsync();
-                        await _userManager.DeleteAsync(user);
-                        return RedirectToAction("ResetPasswordConfirmation", "Accounts");
-
-                    }
-                    foreach (var error in Results.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                    return RedirectToAction("ResetPasswordConfirmation", "Accounts");
-                }
-                await _userManager.DeleteAsync(user);
-                return RedirectToAction("ResetPasswordConfirmation", "Accounts");
-
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
-            return RedirectToAction("ResetPasswordConfirmation", "Accounts");
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View(model);
+            }
+
+            if (await _userManager.IsLockedOutAsync(user))
+            {
+                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+            }
+
+            return RedirectToAction(nameof(ResetPasswordConfirmation));
         }
 
         [HttpGet]
@@ -180,86 +199,66 @@ namespace Filminurk.Controllers
         {
             return View();
         }
+
         [HttpGet]
-        public IActionResult AccountCreated()
-        {
-            return View();
-        }
-        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register()
         {
-            return View();
+            return View(new RegisterViewModel());
         }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = new ApplicationUser
             {
-                var user = new ApplicationUser()
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    ProfileType = model.ProfileType,
-                    DisplayName = model.DisplayName,
-                    AvatarImageID = Guid.NewGuid().ToString(),
-                };
+                UserName = model.Email,
+                Email = model.Email,
+                ProfileType = model.ProfileType,
+                DisplayName = model.DisplayName,
+                AvatarImageID = Guid.NewGuid().ToString(),
+            };
 
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var confirmationLink = Url.Action("ConfirmEmail", "Accounts", new { userID = user.Id, token = token }, Request.Scheme);
+            var result = await _userManager.CreateAsync(user, model.Password);
 
-                    var dto = new EmailDTO() {
-                        SendToThisAddress = user.Email,
-                        EmailSubject = "Registraition Confirmation",
-                        EmailContent = $"ANSWER MEEEEE. \n{confirmationLink}"
-                    };
-                    _emailsServices.SendEmail(dto);
-                        
-                }
+            if (result.Succeeded)
+            {
+                await _emailsServices.SendConfirmationEmailAsync(user, Request.Scheme);
                 return RedirectToAction("Index", "Home");
-                //
             }
-            return BadRequest();
 
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
 
+            return View(model);
         }
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            if (userId == null || token == null)
-            {
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
                 return RedirectToAction("Index", "Home");
-            }
+
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            if (user == null) return NotFound();
+
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
-            {
-                return View("login");
-            }
+                return RedirectToAction(nameof(Login));
+
             return BadRequest();
-
-
         }
-        [HttpPost]
-        [ActionName("ConfirmEmail")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmailPost(string userId, string token)
-        {
-            return RedirectToAction("LoginPost");
-        }
+
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string? returnURL)
+        public IActionResult Login(string? returnURL)
         {
-            LoginViewModel vm = new()
+            var vm = new LoginViewModel
             {
                 ReturnUrl = returnURL,
             };
@@ -267,46 +266,36 @@ namespace Filminurk.Controllers
         }
 
         [HttpPost]
-        [ActionName("LoginPost")]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnURL)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null && !user.EmailConfirmed && (await _userManager.CheckPasswordAsync(user, model.Password)))
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null && !user.EmailConfirmed && (await _userManager.CheckPasswordAsync(user, model.Password)))
-                {
-                    ModelState.AddModelError("", "Sinu Email ei ole kinnitatud, palun vaata spämmikausta");
-                    return View(model);
-                }
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
-                if (result.Succeeded)
-                {
-                    if (!string.IsNullOrEmpty(returnURL) && Url.IsLocalUrl(returnURL))
-                    {
-                        return Redirect(returnURL);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
-                if (result.Succeeded == false)
-                {
-                    ModelState.AddModelError("", "Kasutajanimi või parool on vale");
-                }
-                if (result.IsNotAllowed)
-                {
-                    ModelState.AddModelError("", "Sisselogimine ebaõnnestus, kasutaja keelatud");
-                }
-                if (result.IsLockedOut)
-                {
-                    return View("AccountLocked");
-                }
-                ModelState.AddModelError("", "Sisselogimine ebaõnnestus");
+                ModelState.AddModelError("", "Sinu email ei ole kinnitatud, palun vaata spämmi kausta");
+                return View(model);
             }
+
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: true);
+
+            if (result.Succeeded)
+            {
+                if (!string.IsNullOrEmpty(returnURL) && Url.IsLocalUrl(returnURL))
+                    return Redirect(returnURL);
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (result.IsLockedOut)
+                return View("AccountLocked");
+
+            ModelState.AddModelError("", "Sisselogimine ebaõnnestus, Kontakteeru admin.");
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {

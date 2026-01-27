@@ -20,6 +20,7 @@ builder.Services.AddScoped<IActorsServices, ActorsServices>();
 builder.Services.AddScoped<IUserCommentsServices, UserCommentsServices>();
 builder.Services.AddScoped<IFavoriteListsServices, FavoriteListsServices>();
 builder.Services.AddScoped<IEmailsServices, EmailsServices>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAccountsServices, AccountsServices>();
 builder.Services.AddScoped<IWeatherForcastServices, WeatherForecastServices>();
 builder.Services.AddHttpClient<IOMDbApiServices, OMDbApiServices>();
