@@ -9,7 +9,7 @@ namespace Filminurk.ApplicationServices.Services
         public async Task<AccuLocationWeatherResultDTO> AccuWeatherResult(AccuLocationWeatherResultDTO dto)
         {
             //tallinnkey 127964
-            string apikey = Filminurk.Data.Enviroment.accuweatherkey; //key tuleb enviromentitśt, ega pole hardcodetud
+            string apikey = Filminurk.Data.Environment.accuweatherkey; //key tuleb enviromentitśt, ega pole hardcodetud
             var baseUrl = "https://dataservice.accuweather.com/forecasts/v1/daily/1day/";
             var cityUrl = "https://dataservice.accuweather.com/locations/v1/cities/search";
 

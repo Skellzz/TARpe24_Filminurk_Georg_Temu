@@ -17,19 +17,23 @@ namespace Filminurk.ApplicationServices.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-
-        public EmailsServices(UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
+        public EmailsServices(
+            IConfiguration configuration,
+            UserManager<ApplicationUser> userManager,
+            IHttpContextAccessor httpContextAccessor)
         {
+            _configuration = configuration;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
         }
 
+
         public void SendEmail(EmailDTO dto)
         {
             var email = new MimeMessage();
-            _configuration.GetSection("EmailUserName").Value = Enviroment.gmailusername;
-            _configuration.GetSection("EmailHost").Value = Enviroment.smtppaddress;
-            _configuration.GetSection("EmailPassword").Value = Enviroment.gmailiapppassword;
+            _configuration.GetSection("EmailUserName").Value = Data.Environment.gmailusername;
+            _configuration.GetSection("EmailHost").Value = Data.Environment.smtppaddress;
+            _configuration.GetSection("EmailPassword").Value = Data.Environment.gmailiapppassword;
 
             email.From.Add(MailboxAddress.Parse(_configuration.GetSection("EmailUserName").Value));
             email.To.Add(MailboxAddress.Parse(dto.SendToThisAddress));
