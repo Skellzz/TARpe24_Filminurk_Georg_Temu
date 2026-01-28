@@ -2,6 +2,11 @@
 
 <h2>Jututuba</h2>
 
+<div id="status" style="margin-bottom:10px; padding:8px; border:1px solid #ccc;">
+    Status: <strong id="statusText">Loading...</strong>
+    <div id="statusError" style="color:red;"></div>
+</div>
+
 <div style="display:flex; gap:20px;">
     <div style="width:250px;">
         <h4>Online</h4>
@@ -13,40 +18,46 @@
 
         <div style="margin-top:10px;">
             <input id="message" placeholder="Kirjuta siia..." style="width:80%;" />
-            <button id="send">Saada</button>
+            <button id="send" type="button" disabled>Saada</button>
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.20/dist/browser/signalr.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.20/signalr.min.js"></script>
 <script>
+    const statusText = document.getElementById("statusText");
+    const statusError = document.getElementById("statusError");
+    const sendBtn = document.getElementById("send");
+    const messageInput = document.getElementById("message");
     const chat = document.getElementById("chat");
     const usersUl = document.getElementById("users");
-    const messageInput = document.getElementById("message");
-    const sendBtn = document.getElementById("send");
+
+    function setStatus(text, err) {
+        statusText.textContent = text;
+        statusError.textContent = err || "";
+    }
+
+    if (!window.signalR) {
+        setStatus("ERROR", "SignalR JS ei laadinud. Kontrolli CDN-i.");
+        throw new Error("signalR not loaded");
+    }
 
     const users = new Map();
 
     function renderUsers() {
         usersUl.innerHTML = "";
-        [...users.values()].sort().forEach(name => {
+        [...users.values()].forEach(name => {
             const li = document.createElement("li");
             li.textContent = name;
             usersUl.appendChild(li);
         });
     }
 
-    function addMessage(name, message) {
+    function addMessage(name, msg) {
         const div = document.createElement("div");
-        div.innerHTML = `<strong>${escapeHtml(name)}:</strong> ${escapeHtml(message)}`;
+        div.innerHTML = "<b>" + name + ":</b> " + msg;
         chat.appendChild(div);
         chat.scrollTop = chat.scrollHeight;
-    }
-
-    function escapeHtml(s) {
-        return (s ?? "").replace(/[&<>"']/g, m => ({
-            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-        }[m]));
     }
 
     const connection = new signalR.HubConnectionBuilder()
@@ -54,49 +65,45 @@
         .withAutomaticReconnect()
         .build();
 
-    connection.on("OnlineUsers", (list) => {
+    connection.on("OnlineUsers", list => {
         users.clear();
-        (list || []).forEach(u => users.set(u.userId, u.name));
+        list.forEach(u => users.set(u.userId, u.name));
         renderUsers();
     });
 
-    connection.on("UserConnected", (u) => {
-        if (u && u.userId) {
-            users.set(u.userId, u.name);
-            renderUsers();
-        }
+    connection.on("UserConnected", u => {
+        users.set(u.userId, u.name);
+        renderUsers();
     });
 
-    connection.on("UserDisconnected", (u) => {
-        if (u && u.userId) {
-            users.delete(u.userId);
-            renderUsers();
-        }
+    connection.on("UserDisconnected", u => {
+        users.delete(u.userId);
+        renderUsers();
     });
 
-    connection.on("ReceiveMessage", (m) => {
+    connection.on("ReceiveMessage", m => {
         addMessage(m.name, m.message);
     });
 
+    sendBtn.onclick = async () => {
+        const msg = messageInput.value.trim();
+        if (!msg) return;
+
+        await connection.invoke("SendMessage", msg);
+        messageInput.value = "";
+    };
+
     async function start() {
         try {
+            setStatus("Connecting...");
             await connection.start();
-        } catch (e) {
-            console.error(e);
+            setStatus("Connected");
+            sendBtn.disabled = false;
+        } catch (err) {
+            setStatus("Disconnected", err.toString());
             setTimeout(start, 2000);
         }
     }
-
-    sendBtn.addEventListener("click", async () => {
-        const msg = messageInput.value;
-        if (!msg.trim()) return;
-        messageInput.value = "";
-        await connection.invoke("SendMessage", msg);
-    });
-
-    messageInput.addEventListener("keydown", async (e) => {
-        if (e.key === "Enter") sendBtn.click();
-    });
 
     start();
 </script>
